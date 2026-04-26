@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -111,9 +109,35 @@ const TAG_COLORS = {
   "其他":             "#71717a",
 };
 
+const INITIAL_LOGS = [
+  {
+    id: 3,
+    date: "2026-04-26",
+    content: "浏览器任务队列：Call Stack（同步代码直接执行）、Microtask Queue（Promise.then，全部清空才往下）、Macrotask Queue（MessageChannel / setTimeout，每次取一个）。宏任务之间浏览器有机会处理点击和渲染，这是 React Scheduler 让步的原理。为什么 React 不用 Promise 做调度：微任务优先级太高，会把浏览器渲染饿死。",
+    tag: "RSC / React 原理",
+    mins: 45,
+  },
+  {
+    id: 2,
+    date: "2026-04-26",
+    content: "React Fiber 深入：Phase 1 Render（内存里建 workInProgress 链表树，可中断）→ Phase 2 Commit（一次性刷 DOM，不可中断）。Scheduler 用 MessageChannel 而不是 requestIdleCallback（20fps 太慢）也不用 setTimeout（5层嵌套强制4ms延迟）。每 5ms 时间片让步一次，模拟 60fps。Fiber 可中断这个基础解锁了 Concurrent Mode → useTransition → Suspense → RSC 整条链路。",
+    tag: "RSC / React 原理",
+    mins: 75,
+  },
+  {
+    id: 1,
+    date: "2026-04-25",
+    content: "重新看了 React Server Component 视频和 React render 原理：Virtual DOM、reconciliation、Fiber 架构基础。理解了 RSC 为什么需要 Next.js 这样的框架才能跑，以及 Server Component 和 Client Component 的边界规则。",
+    tag: "RSC / React 原理",
+    mins: 60,
+  },
+];
+
 const PROB_CATEGORIES = ["Array / Object", "String", "Promise / Async", "DOM / Event", "React Component", "UI 实现", "其他"];
 const PROB_DIFF = { Easy: "#10b981", Medium: "#f59e0b", Hard: "#ef4444" };
 const PROB_STATUS = { Solved: "#10b981", Attempted: "#f59e0b", Reviewing: "#A78BFA" };
+
+const INITIAL_PROBLEMS = [];
 
 // ─── COMPONENTS ──────────────────────────────────────────────────────────────
 
@@ -394,7 +418,7 @@ function ProblemView({ problems, setProblems }) {
   const sortedDates = Object.keys(grouped).sort((a,b) => b.localeCompare(a));
 
   const pill = (label, color, onClick, active) => (
-    <button key={label} onClick={onClick} style={{
+    <button onClick={onClick} style={{
       background: active ? `${color}22` : "transparent",
       border: `1px solid ${active ? color : "#3f3f46"}`,
       color: active ? color : "#71717a",
@@ -542,9 +566,12 @@ function ProblemView({ problems, setProblems }) {
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                   <div style={{ flex: 1 }}>
+                    {/* Name */}
                     <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "sans-serif", color: "#e4e4e7", marginBottom: 6 }}>
                       {p.name}
                     </div>
+
+                    {/* Tags row */}
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: p.notes ? 8 : 0 }}>
                       <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${dc}18`, color: dc, border: `1px solid ${dc}30`, fontFamily: "monospace", cursor: "pointer" }}
                         onClick={() => toggle(p.id, "diff", ["Easy","Medium","Hard"])}>
@@ -558,12 +585,15 @@ function ProblemView({ problems, setProblems }) {
                         {p.category}
                       </span>
                     </div>
+
+                    {/* Notes */}
                     {p.notes && (
                       <p style={{ margin: 0, fontSize: 12, color: "#71717a", fontFamily: "sans-serif", lineHeight: 1.65 }}>
                         {p.notes}
                       </p>
                     )}
                   </div>
+
                   <button onClick={() => del(p.id)} style={{
                     background: "none", border: "none", color: "#3f3f46",
                     cursor: "pointer", fontSize: 14, padding: "0 4px", flexShrink: 0, lineHeight: 1
@@ -582,45 +612,14 @@ function ProblemView({ problems, setProblems }) {
   );
 }
 
-// ─── MAIN APP ────────────────────────────────────────────────────────────────
-
 export default function App() {
-  const [loaded, setLoaded]     = useState(false);
-  const [saveStatus, setSaveStatus] = useState("idle"); // "idle" | "saving" | "saved"
-  const [activeTab, setActiveTab]   = useState("roadmap");
+  const [activeTab, setActiveTab] = useState("roadmap");
   const [activeWeek, setActiveWeek] = useState(0);
-  const [expanded, setExpanded]     = useState(null);
-  const [done, setDone]             = useState({});
-  const [showCut, setShowCut]       = useState(false);
-  const [logs, setLogs]             = useState([]);
-  const [problems, setProblems]     = useState([]);
-  const saveTimer = useRef(null);
-
-  // Load state from server on mount
-  useEffect(() => {
-    fetch("/api/data")
-      .then(r => r.json())
-      .then(data => {
-        if (data.done)     setDone(data.done);
-        if (data.logs)     setLogs(data.logs);
-        if (data.problems) setProblems(data.problems);
-        setLoaded(true);
-      });
-  }, []);
-
-  // Auto-save 1 second after any state change
-  useEffect(() => {
-    if (!loaded) return;
-    setSaveStatus("saving");
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      fetch("/api/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ done, logs, problems }),
-      }).then(() => setSaveStatus("saved"));
-    }, 1000);
-  }, [done, logs, problems, loaded]);
+  const [expanded, setExpanded]   = useState(null);
+  const [done, setDone]           = useState({});
+  const [showCut, setShowCut]     = useState(false);
+  const [logs, setLogs]           = useState(INITIAL_LOGS);
+  const [problems, setProblems]   = useState(INITIAL_PROBLEMS);
 
   const toggleDone = (id, e) => {
     e.stopPropagation();
@@ -634,18 +633,6 @@ export default function App() {
 
   const totalLogMins = logs.reduce((s,l) => s + (l.mins||0), 0);
   const solvedProbs  = problems.filter(p => p.status === "Solved").length;
-
-  if (!loaded) {
-    return (
-      <div style={{
-        background: "#09090b", minHeight: "100vh",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        color: "#52525b", fontFamily: "monospace", fontSize: 13
-      }}>
-        loading...
-      </div>
-    );
-  }
 
   return (
     <div style={{
@@ -669,17 +656,7 @@ export default function App() {
                 平日1hr概念 + 周末2-3hr写代码 · 总计约 ~50小时
               </div>
             </div>
-            <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"flex-start" }}>
-              {/* Save indicator */}
-              <div style={{ textAlign:"right", alignSelf:"flex-end" }}>
-                <div style={{
-                  fontSize: 10, fontFamily: "monospace",
-                  color: saveStatus === "saved" ? "#10b981" : "#52525b",
-                  transition: "color 0.3s"
-                }}>
-                  {saveStatus === "saving" ? "saving…" : saveStatus === "saved" ? "● saved" : ""}
-                </div>
-              </div>
+            <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
               <div style={{ textAlign:"right" }}>
                 <div style={{ fontSize:10, color:"#52525b", marginBottom:2 }}>完成进度</div>
                 <div style={{ fontSize:18, fontWeight:700 }}>
@@ -737,6 +714,7 @@ export default function App() {
       <div style={{ borderBottom:"1px solid #27272a", background:"#0c0c0f", position:"sticky", top:0, zIndex:10, overflowX:"auto" }}>
         <div style={{ maxWidth:720, margin:"0 auto", display:"flex", minWidth:"max-content", padding:"0 24px" }}>
 
+          {/* Log tab */}
           <button onClick={() => setActiveTab("log")} style={{
             background:"none", border:"none",
             borderBottom: activeTab==="log" ? "2px solid #10b981" : "2px solid transparent",
@@ -751,6 +729,7 @@ export default function App() {
             </span>
           </button>
 
+          {/* Problems tab */}
           <button onClick={() => setActiveTab("problems")} style={{
             background:"none", border:"none",
             borderBottom: activeTab==="problems" ? "2px solid #38BDF8" : "2px solid transparent",
@@ -767,6 +746,7 @@ export default function App() {
             )}
           </button>
 
+          {/* Week tabs */}
           {WEEKS.map((w,i) => {
             const wDone = w.weekdays.filter(d => done[d.id]).length;
             const isActive = activeTab==="roadmap" && activeWeek===i;
@@ -801,6 +781,7 @@ export default function App() {
       ) : (
         <div style={{ maxWidth:720, margin:"0 auto", padding:"20px 24px 60px" }}>
 
+          {/* Week header */}
           <div style={{
             padding:"14px 18px", marginBottom:16,
             background:`${week.color}0d`, border:`1px solid ${week.color}30`,
@@ -822,6 +803,7 @@ export default function App() {
             </div>
           </div>
 
+          {/* Legend */}
           <div style={{ display:"flex", gap:12, marginBottom:14, flexWrap:"wrap" }}>
             {[["📖 读/看","#38BDF8"],["💻 写代码","#34D399"],["📝 整理/求职","#A78BFA"]].map(([label,color]) => (
               <div key={label} style={{ display:"flex", alignItems:"center", gap:5, fontSize:10, color:"#71717a" }}>
@@ -831,6 +813,7 @@ export default function App() {
             <div style={{ fontSize:10, color:"#52525b" }}>· 点击展开，点圆圈标完成</div>
           </div>
 
+          {/* Day cards */}
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
             {week.weekdays.map(d => {
               const isExp    = expanded === d.id;
