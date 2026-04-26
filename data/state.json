@@ -1,0 +1,27 @@
+{
+  "done": {},
+  "logs": [
+    {
+      "id": 3,
+      "date": "2026-04-26",
+      "content": "浏览器任务队列：Call Stack（同步代码直接执行）、Microtask Queue（Promise.then，全部清空才往下）、Macrotask Queue（MessageChannel / setTimeout，每次取一个）。宏任务之间浏览器有机会处理点击和渲染，这是 React Scheduler 让步的原理。为什么 React 不用 Promise 做调度：微任务优先级太高，会把浏览器渲染饿死。",
+      "tag": "RSC / React 原理",
+      "mins": 45
+    },
+    {
+      "id": 2,
+      "date": "2026-04-26",
+      "content": "React Fiber 深入：Phase 1 Render（内存里建 workInProgress 链表树，可中断）→ Phase 2 Commit（一次性刷 DOM，不可中断）。Scheduler 用 MessageChannel 而不是 requestIdleCallback（20fps 太慢）也不用 setTimeout（5层嵌套强制4ms延迟）。每 5ms 时间片让步一次，模拟 60fps。Fiber 可中断这个基础解锁了 Concurrent Mode → useTransition → Suspense → RSC 整条链路。",
+      "tag": "RSC / React 原理",
+      "mins": 75
+    },
+    {
+      "id": 1,
+      "date": "2026-04-25",
+      "content": "重新看了 React Server Component 视频和 React render 原理：Virtual DOM、reconciliation、Fiber 架构基础。理解了 RSC 为什么需要 Next.js 这样的框架才能跑，以及 Server Component 和 Client Component 的边界规则。",
+      "tag": "RSC / React 原理",
+      "mins": 60
+    }
+  ],
+  "problems": []
+}
