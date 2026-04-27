@@ -2,6 +2,8 @@ import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 const DATA_FILE = join(process.cwd(), "data", "state.json");
 
 export async function GET() {

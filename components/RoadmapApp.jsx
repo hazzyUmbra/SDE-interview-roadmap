@@ -355,20 +355,33 @@ function ProblemView({ problems, setProblems }) {
   const [diff, setDiff]           = useState("Medium");
   const [status, setStatus]       = useState("Solved");
   const [notes, setNotes]         = useState("");
+  const [url, setUrl]             = useState("");
   const [date, setDate]           = useState(new Date().toISOString().slice(0,10));
   const [filterCat, setFilterCat] = useState("全部");
   const [filterDiff, setFilterDiff] = useState("全部");
+  const [editingId, setEditingId] = useState(null);
+  const [editFields, setEditFields] = useState({});
 
   const add = () => {
     if (!name.trim()) return;
     setProblems(prev => [{
       id: Date.now(), date, name: name.trim(),
-      category, diff, status, notes: notes.trim()
+      category, diff, status, notes: notes.trim(), url: url.trim()
     }, ...prev]);
-    setName(""); setNotes(""); setShowForm(false);
+    setName(""); setNotes(""); setUrl(""); setShowForm(false);
   };
 
   const del = (id) => setProblems(prev => prev.filter(p => p.id !== id));
+
+  const startEdit = (p) => {
+    setEditingId(p.id);
+    setEditFields({ name: p.name, category: p.category, diff: p.diff, status: p.status, notes: p.notes || "", url: p.url || "", date: p.date });
+  };
+
+  const saveEdit = (id) => {
+    setProblems(prev => prev.map(p => p.id === id ? { ...p, ...editFields, name: editFields.name.trim(), notes: editFields.notes.trim(), url: editFields.url.trim() } : p));
+    setEditingId(null);
+  };
 
   const toggle = (id, field, vals) => {
     setProblems(prev => prev.map(p => {
@@ -510,6 +523,18 @@ function ProblemView({ problems, setProblems }) {
               }}/>
           </div>
 
+          {/* URL */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目链接（可选）</div>
+            <input value={url} onChange={e => setUrl(e.target.value)}
+              placeholder="https://leetcode.com/problems/..."
+              style={{
+                width: "100%", background: "#09090b", border: "1px solid #3f3f46",
+                color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
+                fontSize: 12, fontFamily: "monospace", boxSizing: "border-box"
+              }}/>
+          </div>
+
           <button onClick={add} style={{
             background: "#38BDF8", border: "none", color: "#000",
             borderRadius: 5, padding: "8px 20px", fontSize: 12,
@@ -532,43 +557,113 @@ function ProblemView({ problems, setProblems }) {
           </div>
 
           {grouped[d].map(p => {
-            const dc = PROB_DIFF[p.diff]   || "#71717a";
+            const dc = PROB_DIFF[p.diff]    || "#71717a";
             const sc = PROB_STATUS[p.status] || "#71717a";
+            const isEditing = editingId === p.id;
             return (
               <div key={p.id} style={{
-                background: "#111113", border: "1px solid #27272a",
+                background: "#111113",
+                borderTop: `1px solid ${isEditing ? "#38BDF850" : "#27272a"}`,
+                borderRight: `1px solid ${isEditing ? "#38BDF850" : "#27272a"}`,
+                borderBottom: `1px solid ${isEditing ? "#38BDF850" : "#27272a"}`,
+                borderLeft: `3px solid ${dc}`,
                 borderRadius: 7, padding: "12px 14px", marginBottom: 6,
-                borderLeft: `3px solid ${dc}`
               }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "sans-serif", color: "#e4e4e7", marginBottom: 6 }}>
-                      {p.name}
+                {isEditing ? (
+                  /* ── inline edit form ── */
+                  <div>
+                    {/* name + date */}
+                    <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目名称</div>
+                        <input value={editFields.name} onChange={e => setEditFields(f => ({ ...f, name: e.target.value }))}
+                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 12, fontFamily: "sans-serif", boxSizing: "border-box" }}/>
+                      </div>
+                      <div style={{ width: 130 }}>
+                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>日期</div>
+                        <input type="date" value={editFields.date} onChange={e => setEditFields(f => ({ ...f, date: e.target.value }))}
+                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 12, fontFamily: "monospace", boxSizing: "border-box" }}/>
+                      </div>
                     </div>
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: p.notes ? 8 : 0 }}>
-                      <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${dc}18`, color: dc, border: `1px solid ${dc}30`, fontFamily: "monospace", cursor: "pointer" }}
-                        onClick={() => toggle(p.id, "diff", ["Easy","Medium","Hard"])}>
-                        {p.diff}
-                      </span>
-                      <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${sc}18`, color: sc, border: `1px solid ${sc}30`, fontFamily: "monospace", cursor: "pointer" }}
-                        onClick={() => toggle(p.id, "status", ["Solved","Attempted","Reviewing"])}>
-                        {p.status}
-                      </span>
-                      <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: "#38BDF815", color: "#38BDF8", border: "1px solid #38BDF830", fontFamily: "monospace" }}>
-                        {p.category}
-                      </span>
+                    {/* category */}
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>分类</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {PROB_CATEGORIES.map(c => pill(c, "#38BDF8", () => setEditFields(f => ({ ...f, category: c })), editFields.category === c))}
+                      </div>
                     </div>
-                    {p.notes && (
-                      <p style={{ margin: 0, fontSize: 12, color: "#71717a", fontFamily: "sans-serif", lineHeight: 1.65 }}>
-                        {p.notes}
-                      </p>
-                    )}
+                    {/* diff + status */}
+                    <div style={{ display: "flex", gap: 20, marginBottom: 10 }}>
+                      <div>
+                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>难度</div>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          {Object.keys(PROB_DIFF).map(d => pill(d, PROB_DIFF[d], () => setEditFields(f => ({ ...f, diff: d })), editFields.diff === d))}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>状态</div>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          {Object.keys(PROB_STATUS).map(s => pill(s, PROB_STATUS[s], () => setEditFields(f => ({ ...f, status: s })), editFields.status === s))}
+                        </div>
+                      </div>
+                    </div>
+                    {/* notes */}
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
+                      <textarea value={editFields.notes} onChange={e => setEditFields(f => ({ ...f, notes: e.target.value }))} rows={3}
+                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "8px 10px", fontSize: 13, fontFamily: "sans-serif", resize: "vertical", boxSizing: "border-box", lineHeight: 1.6, outline: "none" }}/>
+                    </div>
+                    {/* url */}
+                    <div style={{ marginBottom: 12 }}>
+                      <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目链接</div>
+                      <input value={editFields.url} onChange={e => setEditFields(f => ({ ...f, url: e.target.value }))}
+                        placeholder="https://leetcode.com/problems/..."
+                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 12, fontFamily: "monospace", boxSizing: "border-box" }}/>
+                    </div>
+                    {/* actions */}
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button onClick={() => saveEdit(p.id)} style={{ background: "#38BDF8", border: "none", color: "#000", borderRadius: 5, padding: "7px 18px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "monospace" }}>保存</button>
+                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid #3f3f46", color: "#71717a", borderRadius: 5, padding: "7px 14px", fontSize: 12, cursor: "pointer", fontFamily: "monospace" }}>取消</button>
+                    </div>
                   </div>
-                  <button onClick={() => del(p.id)} style={{
-                    background: "none", border: "none", color: "#3f3f46",
-                    cursor: "pointer", fontSize: 14, padding: "0 4px", flexShrink: 0, lineHeight: 1
-                  }}>✕</button>
-                </div>
+                ) : (
+                  /* ── read view ── */
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "sans-serif", color: "#e4e4e7", marginBottom: 6 }}>
+                        {p.url ? (
+                          <a href={p.url} target="_blank" rel="noreferrer" style={{ color: "#e4e4e7", textDecoration: "none" }}
+                            onMouseEnter={e => e.target.style.color = "#38BDF8"}
+                            onMouseLeave={e => e.target.style.color = "#e4e4e7"}>
+                            {p.name} <span style={{ fontSize: 10, color: "#52525b" }}>↗</span>
+                          </a>
+                        ) : p.name}
+                      </div>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: p.notes ? 8 : 0 }}>
+                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${dc}18`, color: dc, border: `1px solid ${dc}30`, fontFamily: "monospace", cursor: "pointer" }}
+                          onClick={() => toggle(p.id, "diff", ["Easy","Medium","Hard"])}>
+                          {p.diff}
+                        </span>
+                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${sc}18`, color: sc, border: `1px solid ${sc}30`, fontFamily: "monospace", cursor: "pointer" }}
+                          onClick={() => toggle(p.id, "status", ["Solved","Attempted","Reviewing"])}>
+                          {p.status}
+                        </span>
+                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: "#38BDF815", color: "#38BDF8", border: "1px solid #38BDF830", fontFamily: "monospace" }}>
+                          {p.category}
+                        </span>
+                      </div>
+                      {p.notes && (
+                        <p style={{ margin: 0, fontSize: 12, color: "#71717a", fontFamily: "sans-serif", lineHeight: 1.65 }}>
+                          {p.notes}
+                        </p>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                      <button onClick={() => startEdit(p)} style={{ background: "none", border: "none", color: "#52525b", cursor: "pointer", fontSize: 12, padding: "0 4px", lineHeight: 1 }} title="编辑">✎</button>
+                      <button onClick={() => del(p.id)} style={{ background: "none", border: "none", color: "#3f3f46", cursor: "pointer", fontSize: 14, padding: "0 4px", lineHeight: 1 }} title="删除">✕</button>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -650,6 +745,7 @@ export default function App() {
   return (
     <div style={{
       background: "#09090b", minHeight: "100vh",
+      display: "flex", flexDirection: "column",
       fontFamily: "'DM Mono','Fira Code',monospace",
       color: "#e4e4e7", fontSize: 13
     }}>
@@ -794,12 +890,13 @@ export default function App() {
       </div>
 
       {/* ── CONTENT ── */}
+      <div style={{ flex: 1 }}>
       {activeTab === "log" ? (
         <LogView logs={logs} setLogs={setLogs} />
       ) : activeTab === "problems" ? (
         <ProblemView problems={problems} setProblems={setProblems} />
       ) : (
-        <div style={{ maxWidth:720, margin:"0 auto", padding:"20px 24px 60px" }}>
+        <div style={{ maxWidth:720, margin:"0 auto", padding:"20px 24px" }}>
 
           <div style={{
             padding:"14px 18px", marginBottom:16,
@@ -895,9 +992,10 @@ export default function App() {
           </div>
         </div>
       )}
+      </div>
 
       {/* ── FOOTER ── */}
-      <div style={{ borderTop:"1px solid #27272a", padding:"20px 24px", background:"#0c0c0f" }}>
+      <div style={{ borderTop:"1px solid #27272a", padding:"14px 24px 12px", background:"#0c0c0f" }}>
         <div style={{ maxWidth:720, margin:"0 auto" }}>
           <div style={{ fontSize:10, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:12 }}>学完后简历技术栈</div>
           <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>

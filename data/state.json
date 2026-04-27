@@ -1,6 +1,9 @@
 {
   "done": {
-    "1-1": true
+    "1-1": true,
+    "1-4": true,
+    "1-5": true,
+    "1-3": true
   },
   "logs": [
     {
@@ -25,5 +28,16 @@
       "mins": 60
     }
   ],
-  "problems": []
+  "problems": [
+    {
+      "id": 1777261140377,
+      "date": "2026-04-26",
+      "name": "TODO list",
+      "category": "UI 实现",
+      "diff": "Easy",
+      "status": "Solved",
+      "notes": "🔴 Bug\n\nstale closure：useCallback(fn, []) 锁住了 input，提交进去永远是空串\nkey={item}：内容当 key，重复 task 会挂，用稳定 id\n\n🟡 细节\n\ntype='form' 不存在\n用 <form onSubmit> 包起来支持 Enter\ndisabled 要 !input.trim()\n\n🟢 A11y\n\n<label htmlFor> 比 aria-label 标准\nDelete 按钮加 aria-label 区分\n\n🧠 useCallback\n\n不省函数创建，只是丢新的留旧的\n唯一作用是引用稳定性，只对 React.memo / hook deps 有用\n传给原生 DOM 的 onClick 不需要\n默认不写\n\nuseCallback 是给下游 memo 用的，不是给上游加的盔甲。",
+      "url": "https://www.greatfrontend.com/questions/user-interface/todo-list"
+    }
+  ]
 }
