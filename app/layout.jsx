@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "SDE Interview Roadmap",
 };
@@ -5,7 +7,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="zh">
-      <body style={{ margin: 0 }}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

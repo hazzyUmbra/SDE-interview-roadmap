@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Responsive content wrapper — replaces hardcoded maxWidth:720 */
+.content-wrap {
+  max-width: clamp(720px, 88vw, 1400px);
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Tab bar uses flex + overflow, keep its own padding */
+.tab-bar {
+  max-width: clamp(720px, 88vw, 1400px);
+  margin: 0 auto;
+  display: flex;
+  min-width: max-content;
+  padding: 0 24px;
+}
+
+/* Problem cards: always full width */
+.prob-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Base font scale */
+body {
+  font-size: 15px;
+}
+
+@media (min-width: 1400px) {
+  body {
+    font-size: 16px;
+  }
+}

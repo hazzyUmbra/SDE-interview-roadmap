@@ -126,7 +126,7 @@ function CheckIcon({ done, color }) {
       display: "flex", alignItems: "center", justifyContent: "center",
       flexShrink: 0, transition: "all 0.2s", cursor: "pointer"
     }}>
-      {done && <span style={{ color:"#000", fontSize:11, fontWeight:700 }}>✓</span>}
+      {done && <span style={{ color:"#000", fontSize:13, fontWeight:700 }}>✓</span>}
     </div>
   );
 }
@@ -162,7 +162,7 @@ function LogView({ logs, setLogs }) {
   const sortedDates = Object.keys(grouped).sort((a,b) => b.localeCompare(a));
 
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "20px 24px 60px" }}>
+    <div className="content-wrap" style={{ paddingTop: 20, paddingBottom: 60 }}>
 
       {/* Stats bar */}
       <div style={{
@@ -178,8 +178,8 @@ function LogView({ logs, setLogs }) {
             background: "#111113", border: "1px solid #27272a",
             borderRadius: 8, padding: "12px 16px"
           }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>{label}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "sans-serif", color: "#e4e4e7" }}>{val}</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "sans-serif", color: "#e4e4e7" }}>{val}</div>
           </div>
         ))}
       </div>
@@ -193,7 +193,7 @@ function LogView({ logs, setLogs }) {
           border: `1px dashed ${showForm ? "#3f3f46" : "#10b981"}`,
           color: showForm ? "#71717a" : "#10b981",
           borderRadius: 8, padding: "10px",
-          cursor: "pointer", fontSize: 13, fontFamily: "monospace",
+          cursor: "pointer", fontSize: 15, fontFamily: "monospace",
           transition: "all 0.15s"
         }}>
         {showForm ? "✕ 取消" : "+ 添加今日学习记录"}
@@ -208,26 +208,26 @@ function LogView({ logs, setLogs }) {
           {/* Date + mins row */}
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>日期</div>
+              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>日期</div>
               <input
                 type="date" value={date}
                 onChange={e => setDate(e.target.value)}
                 style={{
                   width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                   color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
-                  fontSize: 12, fontFamily: "monospace", boxSizing: "border-box"
+                  fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
                 }}
               />
             </div>
             <div style={{ width: 90 }}>
-              <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>时长(分钟)</div>
+              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>时长(分钟)</div>
               <input
                 type="number" value={mins} min={5} max={480}
                 onChange={e => setMins(e.target.value)}
                 style={{
                   width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                   color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
-                  fontSize: 12, fontFamily: "monospace", boxSizing: "border-box"
+                  fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
                 }}
               />
             </div>
@@ -235,7 +235,7 @@ function LogView({ logs, setLogs }) {
 
           {/* Tag selector */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6, letterSpacing: 1 }}>标签</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6, letterSpacing: 1 }}>标签</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {Object.keys(TAG_COLORS).map(t => {
                 const c = TAG_COLORS[t];
@@ -246,7 +246,7 @@ function LogView({ logs, setLogs }) {
                     border: `1px solid ${sel ? c : "#3f3f46"}`,
                     color: sel ? c : "#71717a",
                     borderRadius: 4, padding: "3px 9px",
-                    fontSize: 10, cursor: "pointer", fontFamily: "monospace",
+                    fontSize: 12, cursor: "pointer", fontFamily: "monospace",
                     transition: "all 0.12s"
                   }}>{t}</button>
                 );
@@ -256,7 +256,7 @@ function LogView({ logs, setLogs }) {
 
           {/* Text area */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>今天学了什么</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>今天学了什么</div>
             <textarea
               value={text}
               onChange={e => setText(e.target.value)}
@@ -265,7 +265,7 @@ function LogView({ logs, setLogs }) {
               style={{
                 width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                 color: "#e4e4e7", borderRadius: 5, padding: "8px 10px",
-                fontSize: 13, fontFamily: "sans-serif", resize: "vertical",
+                fontSize: 15, fontFamily: "sans-serif", resize: "vertical",
                 boxSizing: "border-box", lineHeight: 1.6,
                 outline: "none"
               }}
@@ -275,7 +275,7 @@ function LogView({ logs, setLogs }) {
           <button onClick={addLog} style={{
             background: "#10b981", border: "none",
             color: "#000", borderRadius: 5, padding: "8px 20px",
-            fontSize: 12, fontWeight: 700, cursor: "pointer",
+            fontSize: 14, fontWeight: 700, cursor: "pointer",
             fontFamily: "monospace"
           }}>保存记录</button>
         </div>
@@ -283,7 +283,7 @@ function LogView({ logs, setLogs }) {
 
       {/* Log entries */}
       {sortedDates.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#52525b", padding: "40px 0", fontSize: 13, fontFamily: "sans-serif" }}>
+        <div style={{ textAlign: "center", color: "#52525b", padding: "40px 0", fontSize: 15, fontFamily: "sans-serif" }}>
           还没有记录，点上面的按钮开始吧
         </div>
       ) : (
@@ -293,9 +293,9 @@ function LogView({ logs, setLogs }) {
             <div style={{
               display: "flex", alignItems: "center", gap: 8, marginBottom: 8
             }}>
-              <div style={{ fontSize: 11, color: "#71717a", fontFamily: "monospace" }}>{d}</div>
+              <div style={{ fontSize: 13, color: "#71717a", fontFamily: "monospace" }}>{d}</div>
               <div style={{ flex: 1, height: 1, background: "#27272a" }} />
-              <div style={{ fontSize: 10, color: "#52525b" }}>
+              <div style={{ fontSize: 12, color: "#52525b" }}>
                 {grouped[d].reduce((s,l) => s + (l.mins||0), 0)}min
               </div>
             </div>
@@ -312,18 +312,18 @@ function LogView({ logs, setLogs }) {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                     <div style={{ flex: 1 }}>
                       <p style={{
-                        margin: "0 0 8px", fontSize: 13, color: "#d4d4d8",
+                        margin: "0 0 8px", fontSize: 15, color: "#d4d4d8",
                         fontFamily: "sans-serif", lineHeight: 1.65
                       }}>
                         {entry.content}
                       </p>
                       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                         <span style={{
-                          fontSize: 10, padding: "2px 7px", borderRadius: 3,
+                          fontSize: 12, padding: "2px 7px", borderRadius: 3,
                           background: `${c}18`, color: c, border: `1px solid ${c}30`,
                           fontFamily: "monospace"
                         }}>{entry.tag}</span>
-                        <span style={{ fontSize: 10, color: "#52525b" }}>⏱ {entry.mins}min</span>
+                        <span style={{ fontSize: 12, color: "#52525b" }}>⏱ {entry.mins}min</span>
                       </div>
                     </div>
                     <button
@@ -331,7 +331,7 @@ function LogView({ logs, setLogs }) {
                       style={{
                         background: "none", border: "none",
                         color: "#3f3f46", cursor: "pointer",
-                        fontSize: 14, padding: "0 4px", flexShrink: 0,
+                        fontSize: 15, padding: "0 4px", flexShrink: 0,
                         lineHeight: 1
                       }}
                       title="删除">✕</button>
@@ -409,15 +409,15 @@ function ProblemView({ problems, setProblems }) {
   const pill = (label, color, onClick, active) => (
     <button key={label} onClick={onClick} style={{
       background: active ? `${color}22` : "transparent",
-      border: `1px solid ${active ? color : "#3f3f46"}`,
-      color: active ? color : "#71717a",
-      borderRadius: 4, padding: "2px 9px", fontSize: 10,
+      border: `1px solid ${active ? color : "#52525b"}`,
+      color: active ? color : "#a1a1aa",
+      borderRadius: 4, padding: "2px 9px", fontSize: 12,
       cursor: "pointer", fontFamily: "monospace", transition: "all 0.12s"
     }}>{label}</button>
   );
 
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "20px 24px 60px" }}>
+    <div className="content-wrap" style={{ paddingTop: 20, paddingBottom: 60 }}>
 
       {/* Stats */}
       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
@@ -430,8 +430,8 @@ function ProblemView({ problems, setProblems }) {
             flex: 1, minWidth: 100, background: "#111113",
             border: "1px solid #27272a", borderRadius: 8, padding: "12px 16px"
           }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>{label}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "sans-serif", color }}>{val}</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "sans-serif", color }}>{val}</div>
           </div>
         ))}
       </div>
@@ -454,7 +454,7 @@ function ProblemView({ problems, setProblems }) {
         border: `1px dashed ${showForm ? "#3f3f46" : "#38BDF8"}`,
         color: showForm ? "#71717a" : "#38BDF8",
         borderRadius: 8, padding: "10px", cursor: "pointer",
-        fontSize: 13, fontFamily: "monospace", transition: "all 0.15s"
+        fontSize: 15, fontFamily: "monospace", transition: "all 0.15s"
       }}>
         {showForm ? "✕ 取消" : "+ 添加练习题"}
       </button>
@@ -466,28 +466,28 @@ function ProblemView({ problems, setProblems }) {
           {/* Row 1: date + name */}
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
             <div style={{ width: 130 }}>
-              <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>日期</div>
+              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>日期</div>
               <input type="date" value={date} onChange={e => setDate(e.target.value)} style={{
                 width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                 color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
-                fontSize: 12, fontFamily: "monospace", boxSizing: "border-box"
+                fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
               }}/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目名称</div>
+              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目名称</div>
               <input value={name} onChange={e => setName(e.target.value)}
                 placeholder="例：实现 Promise.all / 写一个 debounce / Infinite scroll 组件"
                 style={{
                   width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                   color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
-                  fontSize: 12, fontFamily: "sans-serif", boxSizing: "border-box"
+                  fontSize: 14, fontFamily: "sans-serif", boxSizing: "border-box"
                 }}/>
             </div>
           </div>
 
           {/* Row 2: category */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>分类</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>分类</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {PROB_CATEGORIES.map(c => pill(c, "#38BDF8", () => setCategory(c), category === c))}
             </div>
@@ -496,13 +496,13 @@ function ProblemView({ problems, setProblems }) {
           {/* Row 3: difficulty + status */}
           <div style={{ display: "flex", gap: 20, marginBottom: 12 }}>
             <div>
-              <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>难度</div>
+              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>难度</div>
               <div style={{ display: "flex", gap: 6 }}>
                 {Object.keys(PROB_DIFF).map(d => pill(d, PROB_DIFF[d], () => setDiff(d), diff === d))}
               </div>
             </div>
             <div>
-              <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>状态</div>
+              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>状态</div>
               <div style={{ display: "flex", gap: 6 }}>
                 {Object.keys(PROB_STATUS).map(s => pill(s, PROB_STATUS[s], () => setStatus(s), status === s))}
               </div>
@@ -511,33 +511,33 @@ function ProblemView({ problems, setProblems }) {
 
           {/* Notes */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="例：用 Map 记录 seen，O(n) 时间复杂度。边界：空数组、重复值..."
-              rows={3}
+              rows={8}
               style={{
                 width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                color: "#e4e4e7", borderRadius: 5, padding: "8px 10px",
-                fontSize: 13, fontFamily: "sans-serif", resize: "vertical",
+                color: "#e4e4e7", borderRadius: 5, padding: "10px 12px",
+                fontSize: 15, fontFamily: "sans-serif", resize: "vertical",
                 boxSizing: "border-box", lineHeight: 1.6, outline: "none"
               }}/>
           </div>
 
           {/* URL */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目链接（可选）</div>
+            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目链接（可选）</div>
             <input value={url} onChange={e => setUrl(e.target.value)}
               placeholder="https://leetcode.com/problems/..."
               style={{
                 width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                 color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
-                fontSize: 12, fontFamily: "monospace", boxSizing: "border-box"
+                fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
               }}/>
           </div>
 
           <button onClick={add} style={{
             background: "#38BDF8", border: "none", color: "#000",
-            borderRadius: 5, padding: "8px 20px", fontSize: 12,
+            borderRadius: 5, padding: "8px 20px", fontSize: 14,
             fontWeight: 700, cursor: "pointer", fontFamily: "monospace"
           }}>保存</button>
         </div>
@@ -545,17 +545,18 @@ function ProblemView({ problems, setProblems }) {
 
       {/* Problem list */}
       {sortedDates.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#52525b", padding: "40px 0", fontSize: 13, fontFamily: "sans-serif" }}>
+        <div style={{ textAlign: "center", color: "#52525b", padding: "40px 0", fontSize: 15, fontFamily: "sans-serif" }}>
           还没有记录 — 今天写了什么题？
         </div>
       ) : sortedDates.map(d => (
         <div key={d} style={{ marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <div style={{ fontSize: 11, color: "#71717a", fontFamily: "monospace" }}>{d}</div>
+            <div style={{ fontSize: 13, color: "#71717a", fontFamily: "monospace" }}>{d}</div>
             <div style={{ flex: 1, height: 1, background: "#27272a" }} />
-            <div style={{ fontSize: 10, color: "#52525b" }}>{grouped[d].length} 题</div>
+            <div style={{ fontSize: 12, color: "#52525b" }}>{grouped[d].length} 题</div>
           </div>
 
+          <div className="prob-cards">
           {grouped[d].map(p => {
             const dc = PROB_DIFF[p.diff]    || "#71717a";
             const sc = PROB_STATUS[p.status] || "#71717a";
@@ -575,19 +576,19 @@ function ProblemView({ problems, setProblems }) {
                     {/* name + date */}
                     <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目名称</div>
+                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目名称</div>
                         <input value={editFields.name} onChange={e => setEditFields(f => ({ ...f, name: e.target.value }))}
-                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 12, fontFamily: "sans-serif", boxSizing: "border-box" }}/>
+                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "sans-serif", boxSizing: "border-box" }}/>
                       </div>
                       <div style={{ width: 130 }}>
-                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>日期</div>
+                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>日期</div>
                         <input type="date" value={editFields.date} onChange={e => setEditFields(f => ({ ...f, date: e.target.value }))}
-                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 12, fontFamily: "monospace", boxSizing: "border-box" }}/>
+                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "monospace", boxSizing: "border-box" }}/>
                       </div>
                     </div>
                     {/* category */}
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>分类</div>
+                      <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>分类</div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                         {PROB_CATEGORIES.map(c => pill(c, "#38BDF8", () => setEditFields(f => ({ ...f, category: c })), editFields.category === c))}
                       </div>
@@ -595,13 +596,13 @@ function ProblemView({ problems, setProblems }) {
                     {/* diff + status */}
                     <div style={{ display: "flex", gap: 20, marginBottom: 10 }}>
                       <div>
-                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>难度</div>
+                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>难度</div>
                         <div style={{ display: "flex", gap: 6 }}>
                           {Object.keys(PROB_DIFF).map(d => pill(d, PROB_DIFF[d], () => setEditFields(f => ({ ...f, diff: d })), editFields.diff === d))}
                         </div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: "#52525b", marginBottom: 6 }}>状态</div>
+                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>状态</div>
                         <div style={{ display: "flex", gap: 6 }}>
                           {Object.keys(PROB_STATUS).map(s => pill(s, PROB_STATUS[s], () => setEditFields(f => ({ ...f, status: s })), editFields.status === s))}
                         </div>
@@ -609,68 +610,69 @@ function ProblemView({ problems, setProblems }) {
                     </div>
                     {/* notes */}
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
-                      <textarea value={editFields.notes} onChange={e => setEditFields(f => ({ ...f, notes: e.target.value }))} rows={3}
-                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "8px 10px", fontSize: 13, fontFamily: "sans-serif", resize: "vertical", boxSizing: "border-box", lineHeight: 1.6, outline: "none" }}/>
+                      <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
+                      <textarea value={editFields.notes} onChange={e => setEditFields(f => ({ ...f, notes: e.target.value }))} rows={10}
+                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "10px 12px", fontSize: 15, fontFamily: "sans-serif", resize: "vertical", boxSizing: "border-box", lineHeight: 1.7, outline: "none" }}/>
                     </div>
                     {/* url */}
                     <div style={{ marginBottom: 12 }}>
-                      <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>题目链接</div>
+                      <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目链接</div>
                       <input value={editFields.url} onChange={e => setEditFields(f => ({ ...f, url: e.target.value }))}
                         placeholder="https://leetcode.com/problems/..."
-                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 12, fontFamily: "monospace", boxSizing: "border-box" }}/>
+                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "monospace", boxSizing: "border-box" }}/>
                     </div>
                     {/* actions */}
                     <div style={{ display: "flex", gap: 8 }}>
-                      <button onClick={() => saveEdit(p.id)} style={{ background: "#38BDF8", border: "none", color: "#000", borderRadius: 5, padding: "7px 18px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "monospace" }}>保存</button>
-                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid #3f3f46", color: "#71717a", borderRadius: 5, padding: "7px 14px", fontSize: 12, cursor: "pointer", fontFamily: "monospace" }}>取消</button>
+                      <button onClick={() => saveEdit(p.id)} style={{ background: "#38BDF8", border: "none", color: "#000", borderRadius: 5, padding: "7px 18px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "monospace" }}>保存</button>
+                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid #3f3f46", color: "#71717a", borderRadius: 5, padding: "7px 14px", fontSize: 14, cursor: "pointer", fontFamily: "monospace" }}>取消</button>
                     </div>
                   </div>
                 ) : (
                   /* ── read view ── */
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "sans-serif", color: "#e4e4e7", marginBottom: 6 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, fontFamily: "sans-serif", color: "#e4e4e7", marginBottom: 6 }}>
                         {p.url ? (
                           <a href={p.url} target="_blank" rel="noreferrer" style={{ color: "#e4e4e7", textDecoration: "none" }}
                             onMouseEnter={e => e.target.style.color = "#38BDF8"}
                             onMouseLeave={e => e.target.style.color = "#e4e4e7"}>
-                            {p.name} <span style={{ fontSize: 10, color: "#52525b" }}>↗</span>
+                            {p.name} <span style={{ fontSize: 12, color: "#52525b" }}>↗</span>
                           </a>
                         ) : p.name}
                       </div>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: p.notes ? 8 : 0 }}>
-                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${dc}18`, color: dc, border: `1px solid ${dc}30`, fontFamily: "monospace", cursor: "pointer" }}
+                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: `${dc}18`, color: dc, border: `1px solid ${dc}30`, fontFamily: "monospace", cursor: "pointer" }}
                           onClick={() => toggle(p.id, "diff", ["Easy","Medium","Hard"])}>
                           {p.diff}
                         </span>
-                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: `${sc}18`, color: sc, border: `1px solid ${sc}30`, fontFamily: "monospace", cursor: "pointer" }}
+                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: `${sc}18`, color: sc, border: `1px solid ${sc}30`, fontFamily: "monospace", cursor: "pointer" }}
                           onClick={() => toggle(p.id, "status", ["Solved","Attempted","Reviewing"])}>
                           {p.status}
                         </span>
-                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 3, background: "#38BDF815", color: "#38BDF8", border: "1px solid #38BDF830", fontFamily: "monospace" }}>
+                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "#38BDF815", color: "#38BDF8", border: "1px solid #38BDF830", fontFamily: "monospace" }}>
                           {p.category}
                         </span>
                       </div>
                       {p.notes && (
-                        <p style={{ margin: 0, fontSize: 12, color: "#71717a", fontFamily: "sans-serif", lineHeight: 1.65 }}>
+                        <p style={{ margin: 0, fontSize: 15, color: "#a1a1aa", fontFamily: "sans-serif", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
                           {p.notes}
                         </p>
                       )}
                     </div>
                     <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-                      <button onClick={() => startEdit(p)} style={{ background: "none", border: "none", color: "#52525b", cursor: "pointer", fontSize: 12, padding: "0 4px", lineHeight: 1 }} title="编辑">✎</button>
-                      <button onClick={() => del(p.id)} style={{ background: "none", border: "none", color: "#3f3f46", cursor: "pointer", fontSize: 14, padding: "0 4px", lineHeight: 1 }} title="删除">✕</button>
+                      <button onClick={() => startEdit(p)} style={{ background: "none", border: "none", color: "#52525b", cursor: "pointer", fontSize: 14, padding: "0 4px", lineHeight: 1 }} title="编辑">✎</button>
+                      <button onClick={() => del(p.id)} style={{ background: "none", border: "none", color: "#3f3f46", cursor: "pointer", fontSize: 15, padding: "0 4px", lineHeight: 1 }} title="删除">✕</button>
                     </div>
                   </div>
                 )}
               </div>
             );
           })}
+          </div>
         </div>
       ))}
 
-      <div style={{ fontSize: 10, color: "#3f3f46", textAlign: "center", marginTop: 8, fontFamily: "sans-serif" }}>
+      <div style={{ fontSize: 12, color: "#3f3f46", textAlign: "center", marginTop: 8, fontFamily: "sans-serif" }}>
         点 Difficulty / Status 标签可以快速切换
       </div>
     </div>
@@ -735,7 +737,7 @@ export default function App() {
       <div style={{
         background: "#09090b", minHeight: "100vh",
         display: "flex", alignItems: "center", justifyContent: "center",
-        color: "#52525b", fontFamily: "monospace", fontSize: 13
+        color: "#52525b", fontFamily: "monospace", fontSize: 15
       }}>
         loading...
       </div>
@@ -747,21 +749,21 @@ export default function App() {
       background: "#09090b", minHeight: "100vh",
       display: "flex", flexDirection: "column",
       fontFamily: "'DM Mono','Fira Code',monospace",
-      color: "#e4e4e7", fontSize: 13
+      color: "#e4e4e7", fontSize: 15
     }}>
 
       {/* ── HEADER ── */}
       <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid #27272a", background:"#0c0c0f" }}>
-        <div style={{ maxWidth:720, margin:"0 auto" }}>
+        <div className="content-wrap">
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
             <div>
-              <div style={{ color:"#52525b", fontSize:11, letterSpacing:2, textTransform:"uppercase", marginBottom:6 }}>
+              <div style={{ color:"#52525b", fontSize:13, letterSpacing:2, textTransform:"uppercase", marginBottom:6 }}>
                 Senior FE Engineer · 跳槽 Roadmap v3
               </div>
-              <h1 style={{ margin:0, fontSize:22, fontWeight:700, fontFamily:"system-ui,sans-serif", letterSpacing:-0.5 }}>
+              <h1 style={{ margin:0, fontSize:26, fontWeight:700, fontFamily:"system-ui,sans-serif", letterSpacing:-0.5 }}>
                 5周学习计划 + 每日日志
               </h1>
-              <div style={{ color:"#71717a", fontSize:12, marginTop:4, fontFamily:"sans-serif" }}>
+              <div style={{ color:"#71717a", fontSize:14, marginTop:4, fontFamily:"sans-serif" }}>
                 平日1hr概念 + 周末2-3hr写代码 · 总计约 ~50小时
               </div>
             </div>
@@ -769,7 +771,7 @@ export default function App() {
               {/* Save indicator */}
               <div style={{ textAlign:"right", alignSelf:"flex-end" }}>
                 <div style={{
-                  fontSize: 10, fontFamily: "monospace",
+                  fontSize: 12, fontFamily: "monospace",
                   color: saveStatus === "saved" ? "#10b981" : "#52525b",
                   transition: "color 0.3s"
                 }}>
@@ -777,28 +779,28 @@ export default function App() {
                 </div>
               </div>
               <div style={{ textAlign:"right" }}>
-                <div style={{ fontSize:10, color:"#52525b", marginBottom:2 }}>完成进度</div>
-                <div style={{ fontSize:18, fontWeight:700 }}>
-                  {totalDone}<span style={{ color:"#52525b", fontSize:12 }}>/{totalTasks}</span>
+                <div style={{ fontSize:12, color:"#52525b", marginBottom:2 }}>完成进度</div>
+                <div style={{ fontSize:20, fontWeight:700 }}>
+                  {totalDone}<span style={{ color:"#52525b", fontSize:14 }}>/{totalTasks}</span>
                 </div>
                 <div style={{ width:70, height:3, background:"#27272a", borderRadius:2, marginTop:5, marginLeft:"auto" }}>
                   <div style={{ width:`${(totalDone/totalTasks)*100}%`, height:"100%", background:"#38BDF8", borderRadius:2, transition:"width 0.3s" }} />
                 </div>
               </div>
               <div style={{ textAlign:"right" }}>
-                <div style={{ fontSize:10, color:"#52525b", marginBottom:2 }}>已学时长</div>
-                <div style={{ fontSize:18, fontWeight:700, color:"#10b981" }}>
+                <div style={{ fontSize:12, color:"#52525b", marginBottom:2 }}>已学时长</div>
+                <div style={{ fontSize:20, fontWeight:700, color:"#10b981" }}>
                   {Math.floor(totalLogMins/60)}
-                  <span style={{ color:"#52525b", fontSize:12 }}>h {totalLogMins%60}m</span>
+                  <span style={{ color:"#52525b", fontSize:14 }}>h {totalLogMins%60}m</span>
                 </div>
-                <div style={{ fontSize:9, color:"#52525b", marginTop:5 }}>{logs.length} 条日志</div>
+                <div style={{ fontSize:11, color:"#52525b", marginTop:5 }}>{logs.length} 条日志</div>
               </div>
               <div style={{ textAlign:"right" }}>
-                <div style={{ fontSize:10, color:"#52525b", marginBottom:2 }}>练习题</div>
-                <div style={{ fontSize:18, fontWeight:700, color:"#38BDF8" }}>
-                  {solvedProbs}<span style={{ color:"#52525b", fontSize:12 }}>/{problems.length}</span>
+                <div style={{ fontSize:12, color:"#52525b", marginBottom:2 }}>练习题</div>
+                <div style={{ fontSize:20, fontWeight:700, color:"#38BDF8" }}>
+                  {solvedProbs}<span style={{ color:"#52525b", fontSize:14 }}>/{problems.length}</span>
                 </div>
-                <div style={{ fontSize:9, color:"#52525b", marginTop:5 }}>solved</div>
+                <div style={{ fontSize:11, color:"#52525b", marginTop:5 }}>solved</div>
               </div>
             </div>
           </div>
@@ -806,7 +808,7 @@ export default function App() {
           {/* cut items */}
           <button onClick={() => setShowCut(!showCut)} style={{
             marginTop:16, background:"none", border:"1px solid #3f3f46",
-            color:"#71717a", fontSize:11, padding:"5px 12px", borderRadius:4,
+            color:"#71717a", fontSize:13, padding:"5px 12px", borderRadius:4,
             cursor:"pointer", letterSpacing:0.5, fontFamily:"monospace"
           }}>
             {showCut ? "▾" : "▸"} 已删减内容 ({CUT_ITEMS.length}项)
@@ -814,11 +816,11 @@ export default function App() {
 
           {showCut && (
             <div style={{ marginTop:10, padding:"12px 16px", background:"#111113", border:"1px solid #27272a", borderRadius:6 }}>
-              <div style={{ fontSize:10, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:8 }}>从上版删掉的内容</div>
+              <div style={{ fontSize:12, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:8 }}>从上版删掉的内容</div>
               {CUT_ITEMS.map((item,i) => (
                 <div key={i} style={{ display:"flex", gap:10, marginBottom:6, alignItems:"flex-start" }}>
-                  <span style={{ color:"#ef4444", fontSize:10, marginTop:1, flexShrink:0 }}>✕</span>
-                  <span style={{ fontFamily:"sans-serif", fontSize:12, color:"#a1a1aa" }}>
+                  <span style={{ color:"#ef4444", fontSize:12, marginTop:1, flexShrink:0 }}>✕</span>
+                  <span style={{ fontFamily:"sans-serif", fontSize:14, color:"#a1a1aa" }}>
                     <strong style={{ color:"#d4d4d8" }}>{item.name}</strong>
                     <span style={{ color:"#71717a" }}> — {item.reason}</span>
                   </span>
@@ -831,18 +833,18 @@ export default function App() {
 
       {/* ── TABS ── */}
       <div style={{ borderBottom:"1px solid #27272a", background:"#0c0c0f", position:"sticky", top:0, zIndex:10, overflowX:"auto" }}>
-        <div style={{ maxWidth:720, margin:"0 auto", display:"flex", minWidth:"max-content", padding:"0 24px" }}>
+        <div className="tab-bar">
 
           <button onClick={() => setActiveTab("log")} style={{
             background:"none", border:"none",
             borderBottom: activeTab==="log" ? "2px solid #10b981" : "2px solid transparent",
-            color: activeTab==="log" ? "#10b981" : "#52525b",
-            padding:"12px 16px 10px", cursor:"pointer", fontSize:11,
+            color: activeTab==="log" ? "#10b981" : "#a1a1aa",
+            padding:"12px 16px 10px", cursor:"pointer", fontSize:13,
             fontFamily:"monospace", letterSpacing:0.5, transition:"all 0.15s",
             whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:6
           }}>
             📓 学习日志
-            <span style={{ background:"#10b98125", color:"#10b981", fontSize:9, padding:"1px 5px", borderRadius:10 }}>
+            <span style={{ background:"#10b98125", color:"#10b981", fontSize:11, padding:"1px 5px", borderRadius:10 }}>
               {logs.length}
             </span>
           </button>
@@ -850,14 +852,14 @@ export default function App() {
           <button onClick={() => setActiveTab("problems")} style={{
             background:"none", border:"none",
             borderBottom: activeTab==="problems" ? "2px solid #38BDF8" : "2px solid transparent",
-            color: activeTab==="problems" ? "#38BDF8" : "#52525b",
-            padding:"12px 16px 10px", cursor:"pointer", fontSize:11,
+            color: activeTab==="problems" ? "#38BDF8" : "#a1a1aa",
+            padding:"12px 16px 10px", cursor:"pointer", fontSize:13,
             fontFamily:"monospace", letterSpacing:0.5, transition:"all 0.15s",
             whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:6
           }}>
             💻 练习题
             {problems.length > 0 && (
-              <span style={{ background:"#38BDF825", color:"#38BDF8", fontSize:9, padding:"1px 5px", borderRadius:10 }}>
+              <span style={{ background:"#38BDF825", color:"#38BDF8", fontSize:11, padding:"1px 5px", borderRadius:10 }}>
                 {solvedProbs}/{problems.length}
               </span>
             )}
@@ -872,14 +874,14 @@ export default function App() {
                 style={{
                   background:"none", border:"none",
                   borderBottom: isActive ? `2px solid ${w.color}` : "2px solid transparent",
-                  color: isActive ? w.color : "#52525b",
-                  padding:"12px 16px 10px", cursor:"pointer", fontSize:11,
+                  color: isActive ? w.color : "#a1a1aa",
+                  padding:"12px 16px 10px", cursor:"pointer", fontSize:13,
                   fontFamily:"monospace", letterSpacing:0.5, transition:"all 0.15s",
                   whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:6
                 }}>
                 <span>W{w.id}</span>
                 {wDone > 0 && (
-                  <span style={{ background:`${w.color}25`, color:w.color, fontSize:9, padding:"1px 5px", borderRadius:10 }}>
+                  <span style={{ background:`${w.color}25`, color:w.color, fontSize:11, padding:"1px 5px", borderRadius:10 }}>
                     {wDone}/7
                   </span>
                 )}
@@ -896,7 +898,7 @@ export default function App() {
       ) : activeTab === "problems" ? (
         <ProblemView problems={problems} setProblems={setProblems} />
       ) : (
-        <div style={{ maxWidth:720, margin:"0 auto", padding:"20px 24px" }}>
+        <div className="content-wrap" style={{ paddingTop: 20, paddingBottom: 20 }}>
 
           <div style={{
             padding:"14px 18px", marginBottom:16,
@@ -905,27 +907,27 @@ export default function App() {
             alignItems:"flex-start", flexWrap:"wrap", gap:8
           }}>
             <div>
-              <div style={{ fontSize:10, color:week.color, letterSpacing:2, textTransform:"uppercase", marginBottom:4 }}>
+              <div style={{ fontSize:12, color:week.color, letterSpacing:2, textTransform:"uppercase", marginBottom:4 }}>
                 Week {week.id} · {week.totalHours}
               </div>
-              <div style={{ fontSize:16, fontWeight:700, fontFamily:"sans-serif", letterSpacing:-0.3 }}>{week.title}</div>
-              <div style={{ fontSize:12, color:"#71717a", marginTop:4, fontFamily:"sans-serif" }}>🎯 {week.goal}</div>
+              <div style={{ fontSize:18, fontWeight:700, fontFamily:"sans-serif", letterSpacing:-0.3 }}>{week.title}</div>
+              <div style={{ fontSize:14, color:"#71717a", marginTop:4, fontFamily:"sans-serif" }}>🎯 {week.goal}</div>
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
-              <div style={{ fontSize:10, color:"#52525b" }}>本周完成</div>
-              <div style={{ fontSize:18, fontWeight:700, color:week.color }}>
-                {weekDone}<span style={{ color:"#52525b", fontSize:12 }}>/7</span>
+              <div style={{ fontSize:12, color:"#52525b" }}>本周完成</div>
+              <div style={{ fontSize:20, fontWeight:700, color:week.color }}>
+                {weekDone}<span style={{ color:"#52525b", fontSize:14 }}>/7</span>
               </div>
             </div>
           </div>
 
           <div style={{ display:"flex", gap:12, marginBottom:14, flexWrap:"wrap" }}>
             {[["📖 读/看","#38BDF8"],["💻 写代码","#34D399"],["📝 整理/求职","#A78BFA"]].map(([label,color]) => (
-              <div key={label} style={{ display:"flex", alignItems:"center", gap:5, fontSize:10, color:"#71717a" }}>
+              <div key={label} style={{ display:"flex", alignItems:"center", gap:5, fontSize:12, color:"#71717a" }}>
                 <div style={{ width:6, height:6, borderRadius:"50%", background:color }} />{label}
               </div>
             ))}
-            <div style={{ fontSize:10, color:"#52525b" }}>· 点击展开，点圆圈标完成</div>
+            <div style={{ fontSize:12, color:"#52525b" }}>· 点击展开，点圆圈标完成</div>
           </div>
 
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
@@ -941,18 +943,18 @@ export default function App() {
                   style={{
                     background: isDone ? "#0f1a0f" : isExp ? "#18181b" : "#111113",
                     border: `1px solid ${isDone ? "#166534" : isExp ? week.color+"50" : "#27272a"}`,
-                    borderRadius:7, cursor:"pointer", transition:"all 0.18s", opacity: isDone ? 0.7 : 1
+                    borderRadius:7, cursor:"pointer", transition:"all 0.18s"
                   }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10, padding:"11px 14px" }}>
                     <div onClick={e => toggleDone(d.id, e)}>
                       <CheckIcon done={isDone} color={week.color} />
                     </div>
-                    <div style={{ width:36, textAlign:"center", fontSize:10, fontWeight:700, color: isWeekend ? "#fb923c" : "#52525b", flexShrink:0 }}>
+                    <div style={{ width:36, textAlign:"center", fontSize:12, fontWeight:700, color: isWeekend ? "#fb923c" : "#52525b", flexShrink:0 }}>
                       {d.day}
                     </div>
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{
-                        fontSize:13, fontWeight:600, fontFamily:"sans-serif",
+                        fontSize:15, fontWeight:600, fontFamily:"sans-serif",
                         textDecoration: isDone ? "line-through" : "none",
                         color: isDone ? "#71717a" : "#e4e4e7",
                         overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"
@@ -961,26 +963,26 @@ export default function App() {
                       </div>
                     </div>
                     <div style={{ display:"flex", gap:6, alignItems:"center", flexShrink:0 }}>
-                      <span style={{ fontSize:10, padding:"2px 7px", borderRadius:3, background:ts.bg, color:ts.color, border:`1px solid ${ts.color}30` }}>
+                      <span style={{ fontSize:12, padding:"2px 7px", borderRadius:3, background:ts.bg, color:ts.color, border:`1px solid ${ts.color}30` }}>
                         {d.type}
                       </span>
-                      <span style={{ fontSize:10, color:"#52525b" }}>{d.time}</span>
-                      <span style={{ color:"#52525b", fontSize:14, transform: isExp ? "rotate(180deg)" : "rotate(0deg)", transition:"transform 0.2s", display:"block", lineHeight:1 }}>⌄</span>
+                      <span style={{ fontSize:12, color:"#52525b" }}>{d.time}</span>
+                      <span style={{ color:"#52525b", fontSize:15, transform: isExp ? "rotate(180deg)" : "rotate(0deg)", transition:"transform 0.2s", display:"block", lineHeight:1 }}>⌄</span>
                     </div>
                   </div>
 
                   {isExp && (
                     <div style={{ padding:"12px 14px 14px", borderTop:"1px solid #27272a", marginLeft:44 }}>
-                      <p style={{ margin:"0 0 10px", fontSize:13, color:"#d4d4d8", lineHeight:1.75, fontFamily:"sans-serif" }}>
+                      <p style={{ margin:"0 0 10px", fontSize:15, color:"#d4d4d8", lineHeight:1.75, fontFamily:"sans-serif" }}>
                         {d.task}
                       </p>
                       {d.link && (
-                        <div style={{ fontSize:11, color:"#52525b", fontFamily:"monospace" }}>
+                        <div style={{ fontSize:13, color:"#52525b", fontFamily:"monospace" }}>
                           <span style={{ color:week.color }}>→ </span>{d.link}
                         </div>
                       )}
                       {isWeekend && (
-                        <div style={{ marginTop:10, padding:"6px 10px", background:"#fb923c12", border:"1px solid #fb923c30", borderRadius:4, fontSize:11, color:"#fb923c", fontFamily:"sans-serif" }}>
+                        <div style={{ marginTop:10, padding:"6px 10px", background:"#fb923c12", border:"1px solid #fb923c30", borderRadius:4, fontSize:13, color:"#fb923c", fontFamily:"sans-serif" }}>
                           ⚡ 周末写代码课时 — 平日理解概念，今天动手实现
                         </div>
                       )}
@@ -996,8 +998,8 @@ export default function App() {
 
       {/* ── FOOTER ── */}
       <div style={{ borderTop:"1px solid #27272a", padding:"14px 24px 12px", background:"#0c0c0f" }}>
-        <div style={{ maxWidth:720, margin:"0 auto" }}>
-          <div style={{ fontSize:10, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:12 }}>学完后简历技术栈</div>
+        <div className="content-wrap">
+          <div style={{ fontSize:12, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:12 }}>学完后简历技术栈</div>
           <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
             {[
               ["Next.js 14+","#38BDF8"],["TypeScript","#38BDF8"],
@@ -1009,7 +1011,7 @@ export default function App() {
               ["GitHub Actions","#38BDF8"],["Vercel","#38BDF8"],
               ["Vercel AI SDK","#A78BFA"],
             ].map(([t,c]) => (
-              <span key={t} style={{ fontSize:10, padding:"3px 9px", borderRadius:3, background:`${c}18`, color:c, border:`1px solid ${c}30`, fontFamily:"monospace" }}>{t}</span>
+              <span key={t} style={{ fontSize:12, padding:"3px 9px", borderRadius:3, background:`${c}18`, color:c, border:`1px solid ${c}30`, fontFamily:"monospace" }}>{t}</span>
             ))}
           </div>
         </div>

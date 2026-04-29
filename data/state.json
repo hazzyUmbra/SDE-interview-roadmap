@@ -30,6 +30,16 @@
   ],
   "problems": [
     {
+      "id": 1777436509159,
+      "date": "2026-04-29",
+      "name": "Job Board",
+      "category": "Array / Object",
+      "diff": "Medium",
+      "status": "Solved",
+      "notes": "",
+      "url": "https://www.greatfrontend.com/questions/user-interface/job-board?practice=practice&tab=coding"
+    },
+    {
       "id": 1777261140377,
       "date": "2026-04-26",
       "name": "TODO list",
