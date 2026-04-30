@@ -36,7 +36,7 @@
       "category": "Array / Object",
       "diff": "Medium",
       "status": "Solved",
-      "notes": "",
+      "notes": "Stale closure：setJobIds(ids) 后同一函数里读 jobIds 还是旧的 → 用本地变量 let ids = jobIds\n时间戳错误：new Date().toLocaleDateString(job.time) 三处错 → new Date(job.time * 1000).toLocaleDateString()\nPromise.allSettled + 内层 try/catch 混用：返回结构变了 forEach 解构会崩\nStrictMode 用 didMount ref 不管用：cleanup 里重置 flag 会被下一次 setup 立刻撤销 → 用 one-way latch（只 false→true 不重置）或 AbortController\n\n如何给promise 嵌套id\nconst promises = ids.map(id =>\n  fetch(url(id))\n    .then(r => {\n      if (!r.ok) throw Object.assign(new Error(`HTTP ${r.status}`), { id });\n      return r.json();\n    })\n    .then(data => ({ id, data }))   // ← 成功也要手动塞 id\n);",
       "url": "https://www.greatfrontend.com/questions/user-interface/job-board?practice=practice&tab=coding"
     },
     {
