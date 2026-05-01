@@ -15,7 +15,7 @@ const CUT_ITEMS = [
 const WEEKS = [
   {
     id: 1, title: "Next.js App Router + TypeScript",
-    color: "#38BDF8", totalHours: "~11 hrs",
+    color: "var(--accent)", totalHours: "~11 hrs",
     goal: "能独立搭一个 Next.js 14+ 项目，讲清楚 RSC 是什么",
     weekdays: [
       { id:"1-1", day:"Mon", label:"Next.js App Router 核心概念", type:"📖 读文档", time:"1hr", task:"读 Next.js 官方文档 App Router 部分：理解 app/ 目录结构、layout.tsx、page.tsx、loading.tsx、error.tsx 各自的作用。不需要动手，先把思维模型建立起来。", link:"nextjs.org/docs/app/building-your-application/routing" },
@@ -86,19 +86,19 @@ const WEEKS = [
 ];
 
 const TYPE_STYLE = {
-  "📖 读文档": { bg:"#1e3a5f", color:"#38BDF8" },
-  "📖 练习":   { bg:"#1e3a5f", color:"#38BDF8" },
-  "📖 读文章": { bg:"#1e3a5f", color:"#38BDF8" },
-  "💻 写代码": { bg:"#14532d", color:"#34D399" },
-  "📝 复盘":   { bg:"#3b1f5e", color:"#A78BFA" },
-  "📝 整理":   { bg:"#3b1f5e", color:"#A78BFA" },
+  "📖 读文档": { bg:"var(--tag-blue-bg)", color:"var(--accent)" },
+  "📖 练习":   { bg:"var(--tag-blue-bg)", color:"var(--accent)" },
+  "📖 读文章": { bg:"var(--tag-blue-bg)", color:"var(--accent)" },
+  "💻 写代码": { bg:"var(--tag-green-bg)", color:"#34D399" },
+  "📝 复盘":   { bg:"var(--tag-purple-bg)", color:"#A78BFA" },
+  "📝 整理":   { bg:"var(--tag-purple-bg)", color:"#A78BFA" },
   "📝 求职":   { bg:"#831843", color:"#F472B6" },
-  "💻 练习":   { bg:"#14532d", color:"#34D399" },
+  "💻 练习":   { bg:"var(--tag-green-bg)", color:"#34D399" },
 };
 
 const TAG_COLORS = {
-  "RSC / React 原理": "#38BDF8",
-  "Next.js":          "#38BDF8",
+  "RSC / React 原理": "var(--accent)",
+  "Next.js":          "var(--accent)",
   "TypeScript":       "#A78BFA",
   "GraphQL":          "#A78BFA",
   "CSS / Tailwind":   "#34D399",
@@ -108,7 +108,7 @@ const TAG_COLORS = {
   "求职 / 面试":      "#F472B6",
   "工具链":           "#FB923C",
   "AI / SDK":         "#A78BFA",
-  "其他":             "#71717a",
+  "其他":             "var(--text-secondary)",
 };
 
 const PROB_CATEGORIES = ["Array / Object", "String", "Promise / Async", "DOM / Event", "React Component", "UI 实现", "其他"];
@@ -121,7 +121,7 @@ function CheckIcon({ done, color }) {
   return (
     <div style={{
       width: 20, height: 20, borderRadius: "50%",
-      border: `2px solid ${done ? color : "#3f3f46"}`,
+      border: `2px solid ${done ? color : "var(--border-muted)"}`,
       background: done ? color : "transparent",
       display: "flex", alignItems: "center", justifyContent: "center",
       flexShrink: 0, transition: "all 0.2s", cursor: "pointer"
@@ -175,11 +175,11 @@ function LogView({ logs, setLogs }) {
         ].map(([label, val]) => (
           <div key={label} style={{
             flex: 1, minWidth: 120,
-            background: "#111113", border: "1px solid #27272a",
+            background: "var(--bg-card)", border: "1px solid var(--border)",
             borderRadius: 8, padding: "12px 16px"
           }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>{label}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "sans-serif", color: "#e4e4e7" }}>{val}</div>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "sans-serif", color: "var(--text-primary)" }}>{val}</div>
           </div>
         ))}
       </div>
@@ -189,9 +189,9 @@ function LogView({ logs, setLogs }) {
         onClick={() => setShowForm(!showForm)}
         style={{
           width: "100%", marginBottom: 16,
-          background: showForm ? "#18181b" : "#10b98115",
-          border: `1px dashed ${showForm ? "#3f3f46" : "#10b981"}`,
-          color: showForm ? "#71717a" : "#10b981",
+          background: showForm ? "var(--bg-elevated)" : "#10b98115",
+          border: `1px dashed ${showForm ? "var(--border-muted)" : "#10b981"}`,
+          color: showForm ? "var(--text-secondary)" : "#10b981",
           borderRadius: 8, padding: "10px",
           cursor: "pointer", fontSize: 15, fontFamily: "monospace",
           transition: "all 0.15s"
@@ -202,31 +202,31 @@ function LogView({ logs, setLogs }) {
       {/* Add form */}
       {showForm && (
         <div style={{
-          background: "#111113", border: "1px solid #27272a",
+          background: "var(--bg-card)", border: "1px solid var(--border)",
           borderRadius: 8, padding: "16px", marginBottom: 16
         }}>
           {/* Date + mins row */}
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>日期</div>
+              <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4, letterSpacing: 1 }}>日期</div>
               <input
                 type="date" value={date}
                 onChange={e => setDate(e.target.value)}
                 style={{
-                  width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                  color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
+                  width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                  color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px",
                   fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
                 }}
               />
             </div>
             <div style={{ width: 90 }}>
-              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>时长(分钟)</div>
+              <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4, letterSpacing: 1 }}>时长(分钟)</div>
               <input
                 type="number" value={mins} min={5} max={480}
                 onChange={e => setMins(e.target.value)}
                 style={{
-                  width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                  color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
+                  width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                  color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px",
                   fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
                 }}
               />
@@ -235,16 +235,16 @@ function LogView({ logs, setLogs }) {
 
           {/* Tag selector */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6, letterSpacing: 1 }}>标签</div>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6, letterSpacing: 1 }}>标签</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {Object.keys(TAG_COLORS).map(t => {
                 const c = TAG_COLORS[t];
                 const sel = tag === t;
                 return (
                   <button key={t} onClick={() => setTag(t)} style={{
-                    background: sel ? `${c}25` : "transparent",
-                    border: `1px solid ${sel ? c : "#3f3f46"}`,
-                    color: sel ? c : "#71717a",
+                    background: sel ? `color-mix(in srgb, ${c} 15%, transparent)` : "transparent",
+                    border: `1px solid ${sel ? c : "var(--border-muted)"}`,
+                    color: sel ? c : "var(--text-secondary)",
                     borderRadius: 4, padding: "3px 9px",
                     fontSize: 12, cursor: "pointer", fontFamily: "monospace",
                     transition: "all 0.12s"
@@ -256,15 +256,15 @@ function LogView({ logs, setLogs }) {
 
           {/* Text area */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4, letterSpacing: 1 }}>今天学了什么</div>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4, letterSpacing: 1 }}>今天学了什么</div>
             <textarea
               value={text}
               onChange={e => setText(e.target.value)}
               placeholder="例：今天看了 TanStack Query 的 invalidateQueries，理解了 staleTime 和 gcTime 的区别..."
               rows={3}
               style={{
-                width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                color: "#e4e4e7", borderRadius: 5, padding: "8px 10px",
+                width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                color: "var(--text-primary)", borderRadius: 5, padding: "8px 10px",
                 fontSize: 15, fontFamily: "sans-serif", resize: "vertical",
                 boxSizing: "border-box", lineHeight: 1.6,
                 outline: "none"
@@ -283,7 +283,7 @@ function LogView({ logs, setLogs }) {
 
       {/* Log entries */}
       {sortedDates.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#52525b", padding: "40px 0", fontSize: 15, fontFamily: "sans-serif" }}>
+        <div style={{ textAlign: "center", color: "var(--text-dim)", padding: "40px 0", fontSize: 15, fontFamily: "sans-serif" }}>
           还没有记录，点上面的按钮开始吧
         </div>
       ) : (
@@ -293,26 +293,26 @@ function LogView({ logs, setLogs }) {
             <div style={{
               display: "flex", alignItems: "center", gap: 8, marginBottom: 8
             }}>
-              <div style={{ fontSize: 13, color: "#71717a", fontFamily: "monospace" }}>{d}</div>
-              <div style={{ flex: 1, height: 1, background: "#27272a" }} />
-              <div style={{ fontSize: 12, color: "#52525b" }}>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontFamily: "monospace" }}>{d}</div>
+              <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+              <div style={{ fontSize: 12, color: "var(--text-dim)" }}>
                 {grouped[d].reduce((s,l) => s + (l.mins||0), 0)}min
               </div>
             </div>
 
             {/* Entries */}
             {grouped[d].map(entry => {
-              const c = TAG_COLORS[entry.tag] || "#71717a";
+              const c = TAG_COLORS[entry.tag] || "var(--text-secondary)";
               return (
                 <div key={entry.id} style={{
-                  background: "#111113", border: "1px solid #27272a",
+                  background: "var(--bg-card)", border: "1px solid var(--border)",
                   borderRadius: 7, padding: "12px 14px", marginBottom: 6,
                   borderLeft: `3px solid ${c}`
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                     <div style={{ flex: 1 }}>
                       <p style={{
-                        margin: "0 0 8px", fontSize: 15, color: "#d4d4d8",
+                        margin: "0 0 8px", fontSize: 15, color: "var(--text-tertiary)",
                         fontFamily: "sans-serif", lineHeight: 1.65
                       }}>
                         {entry.content}
@@ -320,17 +320,17 @@ function LogView({ logs, setLogs }) {
                       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                         <span style={{
                           fontSize: 12, padding: "2px 7px", borderRadius: 3,
-                          background: `${c}18`, color: c, border: `1px solid ${c}30`,
+                          background: `color-mix(in srgb, ${c} 9%, transparent)`, color: c, border: `1px solid color-mix(in srgb, ${c} 19%, transparent)`,
                           fontFamily: "monospace"
                         }}>{entry.tag}</span>
-                        <span style={{ fontSize: 12, color: "#52525b" }}>⏱ {entry.mins}min</span>
+                        <span style={{ fontSize: 12, color: "var(--text-dim)" }}>⏱ {entry.mins}min</span>
                       </div>
                     </div>
                     <button
                       onClick={() => deleteLog(entry.id)}
                       style={{
                         background: "none", border: "none",
-                        color: "#3f3f46", cursor: "pointer",
+                        color: "var(--border-muted)", cursor: "pointer",
                         fontSize: 15, padding: "0 4px", flexShrink: 0,
                         lineHeight: 1
                       }}
@@ -347,6 +347,40 @@ function LogView({ logs, setLogs }) {
 }
 
 // ─── PROBLEM VIEW ─────────────────────────────────────────────────────────────
+
+function renderNotes(text) {
+  const blockParts = text.split(/(```[\s\S]*?```)/g);
+  return blockParts.map((part, i) => {
+    if (part.startsWith("```") && part.endsWith("```")) {
+      const inner = part.slice(3, -3);
+      const firstLine = inner.indexOf("\n");
+      const lang = firstLine > 0 ? inner.slice(0, firstLine).trim() : "";
+      const code = lang ? inner.slice(firstLine + 1) : inner.replace(/^\n/, "");
+      return (
+        <pre key={i} style={{
+          margin: "6px 0", padding: "10px 12px",
+          background: "var(--bg-deep)", border: "1px solid var(--border)",
+          borderRadius: 5, overflowX: "auto", whiteSpace: "pre",
+          fontFamily: "'DM Mono','Fira Code',monospace",
+          fontSize: 15, color: "var(--code-block)", lineHeight: 1.65
+        }}>{lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}<code>{code}</code></pre>
+      );
+    }
+    const inlineParts = part.split(/(`[^`\n]+`)/g);
+    return inlineParts.map((seg, j) => {
+      if (seg.startsWith("`") && seg.endsWith("`") && seg.length > 2) {
+        return (
+          <code key={`${i}-${j}`} style={{
+            background: "var(--bg-inset)", border: "1px solid var(--border-muted)",
+            borderRadius: 3, padding: "1px 5px",
+            fontFamily: "'DM Mono','Fira Code',monospace", fontSize: 14, color: "var(--code-inline)"
+          }}>{seg.slice(1, -1)}</code>
+        );
+      }
+      return seg ? <span key={`${i}-${j}`}>{seg}</span> : null;
+    });
+  });
+}
 
 function ProblemView({ problems, setProblems }) {
   const [showForm, setShowForm]   = useState(false);
@@ -408,9 +442,9 @@ function ProblemView({ problems, setProblems }) {
 
   const pill = (label, color, onClick, active) => (
     <button key={label} onClick={onClick} style={{
-      background: active ? `${color}22` : "transparent",
-      border: `1px solid ${active ? color : "#52525b"}`,
-      color: active ? color : "#a1a1aa",
+      background: active ? `color-mix(in srgb, ${color} 13%, transparent)` : "transparent",
+      border: `1px solid ${active ? color : "var(--text-dim)"}`,
+      color: active ? color : "var(--text-body)",
       borderRadius: 4, padding: "2px 9px", fontSize: 12,
       cursor: "pointer", fontFamily: "monospace", transition: "all 0.12s"
     }}>{label}</button>
@@ -422,15 +456,15 @@ function ProblemView({ problems, setProblems }) {
       {/* Stats */}
       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
         {[
-          ["总题数",    `${problems.length}`, "#e4e4e7"],
+          ["总题数",    `${problems.length}`, "var(--text-primary)"],
           ["已解决",    `${solvedCount}`,      "#10b981"],
           ["尝试中",    `${attemptedCount}`,   "#f59e0b"],
         ].map(([label, val, color]) => (
           <div key={label} style={{
-            flex: 1, minWidth: 100, background: "#111113",
-            border: "1px solid #27272a", borderRadius: 8, padding: "12px 16px"
+            flex: 1, minWidth: 100, background: "var(--bg-card)",
+            border: "1px solid var(--border)", borderRadius: 8, padding: "12px 16px"
           }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>{label}</div>
             <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "sans-serif", color }}>{val}</div>
           </div>
         ))}
@@ -439,20 +473,20 @@ function ProblemView({ problems, setProblems }) {
       {/* Filters */}
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
         {["全部", ...PROB_CATEGORIES].map(c =>
-          pill(c, "#38BDF8", () => setFilterCat(c), filterCat === c)
+          pill(c, "var(--accent)", () => setFilterCat(c), filterCat === c)
         )}
-        <span style={{ width: 1, background: "#27272a", margin: "0 4px" }} />
+        <span style={{ width: 1, background: "var(--border)", margin: "0 4px" }} />
         {["全部", "Easy", "Medium", "Hard"].map(d =>
-          pill(d, PROB_DIFF[d] || "#38BDF8", () => setFilterDiff(d), filterDiff === d)
+          pill(d, PROB_DIFF[d] || "var(--accent)", () => setFilterDiff(d), filterDiff === d)
         )}
       </div>
 
       {/* Add button */}
       <button onClick={() => setShowForm(!showForm)} style={{
         width: "100%", marginBottom: 14,
-        background: showForm ? "#18181b" : "#38BDF815",
-        border: `1px dashed ${showForm ? "#3f3f46" : "#38BDF8"}`,
-        color: showForm ? "#71717a" : "#38BDF8",
+        background: showForm ? "var(--bg-elevated)" : "var(--accent-15)",
+        border: `1px dashed ${showForm ? "var(--border-muted)" : "var(--accent)"}`,
+        color: showForm ? "var(--text-secondary)" : "var(--accent)",
         borderRadius: 8, padding: "10px", cursor: "pointer",
         fontSize: 15, fontFamily: "monospace", transition: "all 0.15s"
       }}>
@@ -461,25 +495,25 @@ function ProblemView({ problems, setProblems }) {
 
       {/* Add form */}
       {showForm && (
-        <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 8, padding: "16px", marginBottom: 14 }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 8, padding: "16px", marginBottom: 14 }}>
 
           {/* Row 1: date + name */}
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
             <div style={{ width: 130 }}>
-              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>日期</div>
+              <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>日期</div>
               <input type="date" value={date} onChange={e => setDate(e.target.value)} style={{
-                width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
+                width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px",
                 fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
               }}/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目名称</div>
+              <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>题目名称</div>
               <input value={name} onChange={e => setName(e.target.value)}
                 placeholder="例：实现 Promise.all / 写一个 debounce / Infinite scroll 组件"
                 style={{
-                  width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                  color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
+                  width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                  color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px",
                   fontSize: 14, fontFamily: "sans-serif", boxSizing: "border-box"
                 }}/>
             </div>
@@ -487,22 +521,22 @@ function ProblemView({ problems, setProblems }) {
 
           {/* Row 2: category */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>分类</div>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>分类</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {PROB_CATEGORIES.map(c => pill(c, "#38BDF8", () => setCategory(c), category === c))}
+              {PROB_CATEGORIES.map(c => pill(c, "var(--accent)", () => setCategory(c), category === c))}
             </div>
           </div>
 
           {/* Row 3: difficulty + status */}
           <div style={{ display: "flex", gap: 20, marginBottom: 12 }}>
             <div>
-              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>难度</div>
+              <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>难度</div>
               <div style={{ display: "flex", gap: 6 }}>
                 {Object.keys(PROB_DIFF).map(d => pill(d, PROB_DIFF[d], () => setDiff(d), diff === d))}
               </div>
             </div>
             <div>
-              <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>状态</div>
+              <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>状态</div>
               <div style={{ display: "flex", gap: 6 }}>
                 {Object.keys(PROB_STATUS).map(s => pill(s, PROB_STATUS[s], () => setStatus(s), status === s))}
               </div>
@@ -511,32 +545,40 @@ function ProblemView({ problems, setProblems }) {
 
           {/* Notes */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+              <div style={{ fontSize: 12, color: "var(--text-dim)" }}>解题思路 / 难点</div>
+              <div style={{ fontSize: 10, color: "var(--border-muted)", fontFamily: "monospace" }}>
+                <code style={{ background:"var(--bg-inset)", padding:"1px 5px", borderRadius:2, color:"var(--text-dim)" }}>`code`</code>
+                {" 内联 · "}
+                <code style={{ background:"var(--bg-inset)", padding:"1px 5px", borderRadius:2, color:"var(--text-dim)" }}>```</code>
+                {" 代码块"}
+              </div>
+            </div>
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
-              placeholder="例：用 Map 记录 seen，O(n) 时间复杂度。边界：空数组、重复值..."
+              placeholder={"例：用 Map 记录 seen，`O(n)` 复杂度。\n```js\nconst seen = new Map();\nfor (const [i, v] of nums.entries()) {\n  if (seen.has(target - v)) return [seen.get(target - v), i];\n  seen.set(v, i);\n}\n```"}
               rows={8}
               style={{
-                width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                color: "#e4e4e7", borderRadius: 5, padding: "10px 12px",
-                fontSize: 15, fontFamily: "sans-serif", resize: "vertical",
+                width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                color: "var(--text-primary)", borderRadius: 5, padding: "10px 12px",
+                fontSize: 13, fontFamily: "'DM Mono','Fira Code',monospace", resize: "vertical",
                 boxSizing: "border-box", lineHeight: 1.6, outline: "none"
               }}/>
           </div>
 
           {/* URL */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目链接（可选）</div>
+            <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>题目链接（可选）</div>
             <input value={url} onChange={e => setUrl(e.target.value)}
               placeholder="https://leetcode.com/problems/..."
               style={{
-                width: "100%", background: "#09090b", border: "1px solid #3f3f46",
-                color: "#e4e4e7", borderRadius: 5, padding: "6px 10px",
+                width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)",
+                color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px",
                 fontSize: 14, fontFamily: "monospace", boxSizing: "border-box"
               }}/>
           </div>
 
           <button onClick={add} style={{
-            background: "#38BDF8", border: "none", color: "#000",
+            background: "var(--accent)", border: "none", color: "#000",
             borderRadius: 5, padding: "8px 20px", fontSize: 14,
             fontWeight: 700, cursor: "pointer", fontFamily: "monospace"
           }}>保存</button>
@@ -545,28 +587,28 @@ function ProblemView({ problems, setProblems }) {
 
       {/* Problem list */}
       {sortedDates.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#52525b", padding: "40px 0", fontSize: 15, fontFamily: "sans-serif" }}>
+        <div style={{ textAlign: "center", color: "var(--text-dim)", padding: "40px 0", fontSize: 15, fontFamily: "sans-serif" }}>
           还没有记录 — 今天写了什么题？
         </div>
       ) : sortedDates.map(d => (
         <div key={d} style={{ marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <div style={{ fontSize: 13, color: "#71717a", fontFamily: "monospace" }}>{d}</div>
-            <div style={{ flex: 1, height: 1, background: "#27272a" }} />
-            <div style={{ fontSize: 12, color: "#52525b" }}>{grouped[d].length} 题</div>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)", fontFamily: "monospace" }}>{d}</div>
+            <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+            <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{grouped[d].length} 题</div>
           </div>
 
           <div className="prob-cards">
           {grouped[d].map(p => {
-            const dc = PROB_DIFF[p.diff]    || "#71717a";
-            const sc = PROB_STATUS[p.status] || "#71717a";
+            const dc = PROB_DIFF[p.diff]    || "var(--text-secondary)";
+            const sc = PROB_STATUS[p.status] || "var(--text-secondary)";
             const isEditing = editingId === p.id;
             return (
               <div key={p.id} style={{
-                background: "#111113",
-                borderTop: `1px solid ${isEditing ? "#38BDF850" : "#27272a"}`,
-                borderRight: `1px solid ${isEditing ? "#38BDF850" : "#27272a"}`,
-                borderBottom: `1px solid ${isEditing ? "#38BDF850" : "#27272a"}`,
+                background: "var(--bg-card)",
+                borderTop: `1px solid ${isEditing ? "var(--accent-50)" : "var(--border)"}`,
+                borderRight: `1px solid ${isEditing ? "var(--accent-50)" : "var(--border)"}`,
+                borderBottom: `1px solid ${isEditing ? "var(--accent-50)" : "var(--border)"}`,
                 borderLeft: `3px solid ${dc}`,
                 borderRadius: 7, padding: "12px 14px", marginBottom: 6,
               }}>
@@ -576,33 +618,33 @@ function ProblemView({ problems, setProblems }) {
                     {/* name + date */}
                     <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目名称</div>
+                        <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>题目名称</div>
                         <input value={editFields.name} onChange={e => setEditFields(f => ({ ...f, name: e.target.value }))}
-                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "sans-serif", boxSizing: "border-box" }}/>
+                          style={{ width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)", color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "sans-serif", boxSizing: "border-box" }}/>
                       </div>
                       <div style={{ width: 130 }}>
-                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>日期</div>
+                        <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>日期</div>
                         <input type="date" value={editFields.date} onChange={e => setEditFields(f => ({ ...f, date: e.target.value }))}
-                          style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "monospace", boxSizing: "border-box" }}/>
+                          style={{ width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)", color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "monospace", boxSizing: "border-box" }}/>
                       </div>
                     </div>
                     {/* category */}
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>分类</div>
+                      <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>分类</div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {PROB_CATEGORIES.map(c => pill(c, "#38BDF8", () => setEditFields(f => ({ ...f, category: c })), editFields.category === c))}
+                        {PROB_CATEGORIES.map(c => pill(c, "var(--accent)", () => setEditFields(f => ({ ...f, category: c })), editFields.category === c))}
                       </div>
                     </div>
                     {/* diff + status */}
                     <div style={{ display: "flex", gap: 20, marginBottom: 10 }}>
                       <div>
-                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>难度</div>
+                        <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>难度</div>
                         <div style={{ display: "flex", gap: 6 }}>
                           {Object.keys(PROB_DIFF).map(d => pill(d, PROB_DIFF[d], () => setEditFields(f => ({ ...f, diff: d })), editFields.diff === d))}
                         </div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 12, color: "#52525b", marginBottom: 6 }}>状态</div>
+                        <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>状态</div>
                         <div style={{ display: "flex", gap: 6 }}>
                           {Object.keys(PROB_STATUS).map(s => pill(s, PROB_STATUS[s], () => setEditFields(f => ({ ...f, status: s })), editFields.status === s))}
                         </div>
@@ -610,58 +652,66 @@ function ProblemView({ problems, setProblems }) {
                     </div>
                     {/* notes */}
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                        <div style={{ fontSize: 12, color: "var(--text-dim)" }}>解题思路 / 难点</div>
+                        <div style={{ fontSize: 10, color: "var(--border-muted)", fontFamily: "monospace" }}>
+                          <code style={{ background:"var(--bg-inset)", padding:"1px 5px", borderRadius:2, color:"var(--text-dim)" }}>`code`</code>
+                          {" 内联 · "}
+                          <code style={{ background:"var(--bg-inset)", padding:"1px 5px", borderRadius:2, color:"var(--text-dim)" }}>```</code>
+                          {" 代码块"}
+                        </div>
+                      </div>
                       <textarea value={editFields.notes} onChange={e => setEditFields(f => ({ ...f, notes: e.target.value }))} rows={10}
-                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "10px 12px", fontSize: 15, fontFamily: "sans-serif", resize: "vertical", boxSizing: "border-box", lineHeight: 1.7, outline: "none" }}/>
+                        style={{ width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)", color: "var(--text-primary)", borderRadius: 5, padding: "10px 12px", fontSize: 13, fontFamily: "'DM Mono','Fira Code',monospace", resize: "vertical", boxSizing: "border-box", lineHeight: 1.7, outline: "none" }}/>
                     </div>
                     {/* url */}
                     <div style={{ marginBottom: 12 }}>
-                      <div style={{ fontSize: 12, color: "#52525b", marginBottom: 4 }}>题目链接</div>
+                      <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 4 }}>题目链接</div>
                       <input value={editFields.url} onChange={e => setEditFields(f => ({ ...f, url: e.target.value }))}
                         placeholder="https://leetcode.com/problems/..."
-                        style={{ width: "100%", background: "#09090b", border: "1px solid #3f3f46", color: "#e4e4e7", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "monospace", boxSizing: "border-box" }}/>
+                        style={{ width: "100%", background: "var(--bg-deep)", border: "1px solid var(--border-muted)", color: "var(--text-primary)", borderRadius: 5, padding: "6px 10px", fontSize: 14, fontFamily: "monospace", boxSizing: "border-box" }}/>
                     </div>
                     {/* actions */}
                     <div style={{ display: "flex", gap: 8 }}>
-                      <button onClick={() => saveEdit(p.id)} style={{ background: "#38BDF8", border: "none", color: "#000", borderRadius: 5, padding: "7px 18px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "monospace" }}>保存</button>
-                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid #3f3f46", color: "#71717a", borderRadius: 5, padding: "7px 14px", fontSize: 14, cursor: "pointer", fontFamily: "monospace" }}>取消</button>
+                      <button onClick={() => saveEdit(p.id)} style={{ background: "var(--accent)", border: "none", color: "#000", borderRadius: 5, padding: "7px 18px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "monospace" }}>保存</button>
+                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid var(--border-muted)", color: "var(--text-secondary)", borderRadius: 5, padding: "7px 14px", fontSize: 14, cursor: "pointer", fontFamily: "monospace" }}>取消</button>
                     </div>
                   </div>
                 ) : (
                   /* ── read view ── */
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 15, fontWeight: 600, fontFamily: "sans-serif", color: "#e4e4e7", marginBottom: 6 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, fontFamily: "sans-serif", color: "var(--text-primary)", marginBottom: 6 }}>
                         {p.url ? (
-                          <a href={p.url} target="_blank" rel="noreferrer" style={{ color: "#e4e4e7", textDecoration: "none" }}
-                            onMouseEnter={e => e.target.style.color = "#38BDF8"}
-                            onMouseLeave={e => e.target.style.color = "#e4e4e7"}>
-                            {p.name} <span style={{ fontSize: 12, color: "#52525b" }}>↗</span>
+                          <a href={p.url} target="_blank" rel="noreferrer" style={{ color: "var(--text-primary)", textDecoration: "none" }}
+                            onMouseEnter={e => e.target.style.color = "var(--accent)"}
+                            onMouseLeave={e => e.target.style.color = "var(--text-primary)"}>
+                            {p.name} <span style={{ fontSize: 12, color: "var(--text-dim)" }}>↗</span>
                           </a>
                         ) : p.name}
                       </div>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: p.notes ? 8 : 0 }}>
-                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: `${dc}18`, color: dc, border: `1px solid ${dc}30`, fontFamily: "monospace", cursor: "pointer" }}
+                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: `color-mix(in srgb, ${dc} 9%, transparent)`, color: dc, border: `1px solid color-mix(in srgb, ${dc} 19%, transparent)`, fontFamily: "monospace", cursor: "pointer" }}
                           onClick={() => toggle(p.id, "diff", ["Easy","Medium","Hard"])}>
                           {p.diff}
                         </span>
-                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: `${sc}18`, color: sc, border: `1px solid ${sc}30`, fontFamily: "monospace", cursor: "pointer" }}
+                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: `color-mix(in srgb, ${sc} 9%, transparent)`, color: sc, border: `1px solid color-mix(in srgb, ${sc} 19%, transparent)`, fontFamily: "monospace", cursor: "pointer" }}
                           onClick={() => toggle(p.id, "status", ["Solved","Attempted","Reviewing"])}>
                           {p.status}
                         </span>
-                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "#38BDF815", color: "#38BDF8", border: "1px solid #38BDF830", fontFamily: "monospace" }}>
+                        <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "var(--accent-15)", color: "var(--accent)", border: "1px solid #38BDF830", fontFamily: "monospace" }}>
                           {p.category}
                         </span>
                       </div>
                       {p.notes && (
-                        <p style={{ margin: 0, fontSize: 15, color: "#a1a1aa", fontFamily: "sans-serif", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
-                          {p.notes}
-                        </p>
+                        <div style={{ margin: 0, fontSize: 17, color: "var(--text-body)", fontFamily: "sans-serif", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
+                          {renderNotes(p.notes)}
+                        </div>
                       )}
                     </div>
                     <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-                      <button onClick={() => startEdit(p)} style={{ background: "none", border: "none", color: "#52525b", cursor: "pointer", fontSize: 14, padding: "0 4px", lineHeight: 1 }} title="编辑">✎</button>
-                      <button onClick={() => del(p.id)} style={{ background: "none", border: "none", color: "#3f3f46", cursor: "pointer", fontSize: 15, padding: "0 4px", lineHeight: 1 }} title="删除">✕</button>
+                      <button onClick={() => startEdit(p)} style={{ background: "none", border: "none", color: "var(--text-dim)", cursor: "pointer", fontSize: 14, padding: "0 4px", lineHeight: 1 }} title="编辑">✎</button>
+                      <button onClick={() => del(p.id)} style={{ background: "none", border: "none", color: "var(--border-muted)", cursor: "pointer", fontSize: 15, padding: "0 4px", lineHeight: 1 }} title="删除">✕</button>
                     </div>
                   </div>
                 )}
@@ -672,8 +722,8 @@ function ProblemView({ problems, setProblems }) {
         </div>
       ))}
 
-      <div style={{ fontSize: 12, color: "#3f3f46", textAlign: "center", marginTop: 8, fontFamily: "sans-serif" }}>
-        点 Difficulty / Status 标签可以快速切换
+      <div style={{ fontSize: 12, color: "var(--border-muted)", textAlign: "center", marginTop: 8, fontFamily: "sans-serif" }}>
+        点 Difficulty / Status 标签可以快速切换 · 笔记支持 <code style={{ background:"var(--bg-inset)", padding:"1px 5px", borderRadius:2 }}>`内联代码`</code> 和 <code style={{ background:"var(--bg-inset)", padding:"1px 5px", borderRadius:2 }}>```代码块```</code>
       </div>
     </div>
   );
@@ -691,6 +741,7 @@ export default function App() {
   const [showCut, setShowCut]       = useState(false);
   const [logs, setLogs]             = useState([]);
   const [problems, setProblems]     = useState([]);
+  const [isDark, setIsDark]         = useState(true);
   const saveTimer = useRef(null);
 
   // Load state from server on mount
@@ -732,12 +783,65 @@ export default function App() {
   const totalLogMins = logs.reduce((s,l) => s + (l.mins||0), 0);
   const solvedProbs  = problems.filter(p => p.status === "Solved").length;
 
+  const cssVars = isDark ? {
+    "--bg-deep":        "#09090b",
+    "--bg-header":      "#0c0c0f",
+    "--bg-card":        "#111113",
+    "--bg-elevated":    "#18181b",
+    "--bg-inset":       "#1c1c1f",
+    "--border":         "#27272a",
+    "--border-muted":   "#3f3f46",
+    "--text-dim":       "#52525b",
+    "--text-secondary": "#71717a",
+    "--text-body":      "#a1a1aa",
+    "--text-tertiary":  "#d4d4d8",
+    "--text-primary":   "#e4e4e7",
+    "--accent":         "#38BDF8",
+    "--accent-15":      "rgba(56,189,248,0.09)",
+    "--accent-25":      "rgba(56,189,248,0.15)",
+    "--accent-30":      "rgba(56,189,248,0.19)",
+    "--accent-50":      "rgba(56,189,248,0.31)",
+    "--tag-blue-bg":    "#1e3a5f",
+    "--tag-green-bg":   "#14532d",
+    "--tag-purple-bg":  "#3b1f5e",
+    "--code-block":     "#a3e635",
+    "--code-inline":    "#fbbf24",
+    "--done-bg":        "#0f1a0f",
+    "--done-border":    "#166534",
+  } : {
+    "--bg-deep":        "#ffffff",
+    "--bg-header":      "#f4f4f6",
+    "--bg-card":        "#f8f8fb",
+    "--bg-elevated":    "#efeff2",
+    "--bg-inset":       "#e4e4e8",
+    "--border":         "#e0e0e4",
+    "--border-muted":   "#c4c4cc",
+    "--text-dim":       "#94a3b8",
+    "--text-secondary": "#64748b",
+    "--text-body":      "#475569",
+    "--text-tertiary":  "#334155",
+    "--text-primary":   "#0f172a",
+    "--accent":         "#0284c7",
+    "--accent-15":      "rgba(2,132,199,0.09)",
+    "--accent-25":      "rgba(2,132,199,0.15)",
+    "--accent-30":      "rgba(2,132,199,0.19)",
+    "--accent-50":      "rgba(2,132,199,0.31)",
+    "--tag-blue-bg":    "#dbeafe",
+    "--tag-green-bg":   "#dcfce7",
+    "--tag-purple-bg":  "#f3e8ff",
+    "--code-block":     "#15803d",
+    "--code-inline":    "#b45309",
+    "--done-bg":        "#f0fdf4",
+    "--done-border":    "#86efac",
+  };
+
   if (!loaded) {
     return (
       <div style={{
-        background: "#09090b", minHeight: "100vh",
+        ...cssVars,
+        background: "var(--bg-deep)", minHeight: "100vh",
         display: "flex", alignItems: "center", justifyContent: "center",
-        color: "#52525b", fontFamily: "monospace", fontSize: 15
+        color: "var(--text-dim)", fontFamily: "monospace", fontSize: 15
       }}>
         loading...
       </div>
@@ -746,83 +850,95 @@ export default function App() {
 
   return (
     <div style={{
-      background: "#09090b", minHeight: "100vh",
+      ...cssVars,
+      background: "var(--bg-deep)", minHeight: "100vh",
       display: "flex", flexDirection: "column",
       fontFamily: "'DM Mono','Fira Code',monospace",
-      color: "#e4e4e7", fontSize: 15
+      color: "var(--text-primary)", fontSize: 15,
+      WebkitFontSmoothing: isDark ? "antialiased" : "subpixel-antialiased",
+      MozOsxFontSmoothing: isDark ? "grayscale" : "auto"
     }}>
 
       {/* ── HEADER ── */}
-      <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid #27272a", background:"#0c0c0f" }}>
+      <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid var(--border)", background:"var(--bg-header)" }}>
         <div className="content-wrap">
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
             <div>
-              <div style={{ color:"#52525b", fontSize:13, letterSpacing:2, textTransform:"uppercase", marginBottom:6 }}>
+              <div style={{ color:"var(--text-dim)", fontSize:13, letterSpacing:2, textTransform:"uppercase", marginBottom:6 }}>
                 Senior FE Engineer · 跳槽 Roadmap v3
               </div>
               <h1 style={{ margin:0, fontSize:26, fontWeight:700, fontFamily:"system-ui,sans-serif", letterSpacing:-0.5 }}>
                 5周学习计划 + 每日日志
               </h1>
-              <div style={{ color:"#71717a", fontSize:14, marginTop:4, fontFamily:"sans-serif" }}>
+              <div style={{ color:"var(--text-secondary)", fontSize:14, marginTop:4, fontFamily:"sans-serif" }}>
                 平日1hr概念 + 周末2-3hr写代码 · 总计约 ~50小时
               </div>
             </div>
             <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"flex-start" }}>
+              {/* Theme toggle */}
+              <button onClick={() => setIsDark(d => !d)} style={{
+                background: "none", border: "1px solid var(--border-muted)",
+                color: "var(--text-secondary)", borderRadius: 6, padding: "5px 10px",
+                cursor: "pointer", fontSize: 16, lineHeight: 1, alignSelf: "flex-end",
+                marginBottom: 2
+              }} title={isDark ? "切换亮色模式" : "切换深色模式"}>
+                {isDark ? "☀" : "🌙"}
+              </button>
               {/* Save indicator */}
               <div style={{ textAlign:"right", alignSelf:"flex-end" }}>
                 <div style={{
                   fontSize: 12, fontFamily: "monospace",
-                  color: saveStatus === "saved" ? "#10b981" : "#52525b",
+                  color: saveStatus === "saved" ? "#10b981" : "var(--text-dim)",
                   transition: "color 0.3s"
                 }}>
                   {saveStatus === "saving" ? "saving…" : saveStatus === "saved" ? "● saved" : ""}
                 </div>
               </div>
               <div style={{ textAlign:"right" }}>
-                <div style={{ fontSize:12, color:"#52525b", marginBottom:2 }}>完成进度</div>
+                <div style={{ fontSize:12, color:"var(--text-dim)", marginBottom:2 }}>完成进度</div>
                 <div style={{ fontSize:20, fontWeight:700 }}>
-                  {totalDone}<span style={{ color:"#52525b", fontSize:14 }}>/{totalTasks}</span>
+                  {totalDone}<span style={{ color:"var(--text-dim)", fontSize:14 }}>/{totalTasks}</span>
                 </div>
-                <div style={{ width:70, height:3, background:"#27272a", borderRadius:2, marginTop:5, marginLeft:"auto" }}>
-                  <div style={{ width:`${(totalDone/totalTasks)*100}%`, height:"100%", background:"#38BDF8", borderRadius:2, transition:"width 0.3s" }} />
+                <div style={{ width:70, height:3, background:"var(--border)", borderRadius:2, marginTop:5, marginLeft:"auto" }}>
+                  <div style={{ width:`${(totalDone/totalTasks)*100}%`, height:"100%", background:"var(--accent)", borderRadius:2, transition:"width 0.3s" }} />
                 </div>
               </div>
               <div style={{ textAlign:"right" }}>
-                <div style={{ fontSize:12, color:"#52525b", marginBottom:2 }}>已学时长</div>
+                <div style={{ fontSize:12, color:"var(--text-dim)", marginBottom:2 }}>已学时长</div>
                 <div style={{ fontSize:20, fontWeight:700, color:"#10b981" }}>
                   {Math.floor(totalLogMins/60)}
-                  <span style={{ color:"#52525b", fontSize:14 }}>h {totalLogMins%60}m</span>
+                  <span style={{ color:"var(--text-dim)", fontSize:14 }}>h {totalLogMins%60}m</span>
                 </div>
-                <div style={{ fontSize:11, color:"#52525b", marginTop:5 }}>{logs.length} 条日志</div>
+                <div style={{ fontSize:11, color:"var(--text-dim)", marginTop:5 }}>{logs.length} 条日志</div>
               </div>
               <div style={{ textAlign:"right" }}>
-                <div style={{ fontSize:12, color:"#52525b", marginBottom:2 }}>练习题</div>
-                <div style={{ fontSize:20, fontWeight:700, color:"#38BDF8" }}>
-                  {solvedProbs}<span style={{ color:"#52525b", fontSize:14 }}>/{problems.length}</span>
+                <div style={{ fontSize:12, color:"var(--text-dim)", marginBottom:2 }}>练习题</div>
+                <div style={{ fontSize:20, fontWeight:700, color:"var(--accent)" }}>
+                  {solvedProbs}<span style={{ color:"var(--text-dim)", fontSize:14 }}>/{problems.length}</span>
                 </div>
-                <div style={{ fontSize:11, color:"#52525b", marginTop:5 }}>solved</div>
+                <div style={{ fontSize:11, color:"var(--text-dim)", marginTop:5 }}>solved</div>
               </div>
             </div>
           </div>
 
           {/* cut items */}
           <button onClick={() => setShowCut(!showCut)} style={{
-            marginTop:16, background:"none", border:"1px solid #3f3f46",
-            color:"#71717a", fontSize:13, padding:"5px 12px", borderRadius:4,
+            marginTop:16, background:"none", border:"1px solid var(--border-muted)",
+            color:"var(--text-secondary)", fontSize:13, padding:"5px 12px", borderRadius:4,
             cursor:"pointer", letterSpacing:0.5, fontFamily:"monospace"
           }}>
             {showCut ? "▾" : "▸"} 已删减内容 ({CUT_ITEMS.length}项)
           </button>
 
           {showCut && (
-            <div style={{ marginTop:10, padding:"12px 16px", background:"#111113", border:"1px solid #27272a", borderRadius:6 }}>
-              <div style={{ fontSize:12, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:8 }}>从上版删掉的内容</div>
+            <div style={{ marginTop:10, padding:"12px 16px", background:"var(--bg-card)", border:"1px solid var(--border)", borderRadius:6 }}>
+              <div style={{ fontSize:12, color:"var(--text-dim)", letterSpacing:1.5, textTransform:"uppercase", marginBottom:8 }}>从上版删掉的内容</div>
               {CUT_ITEMS.map((item,i) => (
                 <div key={i} style={{ display:"flex", gap:10, marginBottom:6, alignItems:"flex-start" }}>
                   <span style={{ color:"#ef4444", fontSize:12, marginTop:1, flexShrink:0 }}>✕</span>
-                  <span style={{ fontFamily:"sans-serif", fontSize:14, color:"#a1a1aa" }}>
-                    <strong style={{ color:"#d4d4d8" }}>{item.name}</strong>
-                    <span style={{ color:"#71717a" }}> — {item.reason}</span>
+                  <span style={{ fontFamily:"sans-serif", fontSize:14, color:"var(--text-body)" }}>
+                    <strong style={{ color:"var(--text-tertiary)" }}>{item.name}</strong>
+                    <span style={{ color:"var(--text-secondary)" }}> — {item.reason}</span>
                   </span>
                 </div>
               ))}
@@ -832,13 +948,13 @@ export default function App() {
       </div>
 
       {/* ── TABS ── */}
-      <div style={{ borderBottom:"1px solid #27272a", background:"#0c0c0f", position:"sticky", top:0, zIndex:10, overflowX:"auto" }}>
+      <div style={{ borderBottom:"1px solid var(--border)", background:"var(--bg-header)", position:"sticky", top:0, zIndex:10, overflowX:"auto" }}>
         <div className="tab-bar">
 
           <button onClick={() => setActiveTab("log")} style={{
             background:"none", border:"none",
             borderBottom: activeTab==="log" ? "2px solid #10b981" : "2px solid transparent",
-            color: activeTab==="log" ? "#10b981" : "#a1a1aa",
+            color: activeTab==="log" ? "#10b981" : "var(--text-body)",
             padding:"12px 16px 10px", cursor:"pointer", fontSize:13,
             fontFamily:"monospace", letterSpacing:0.5, transition:"all 0.15s",
             whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:6
@@ -851,15 +967,15 @@ export default function App() {
 
           <button onClick={() => setActiveTab("problems")} style={{
             background:"none", border:"none",
-            borderBottom: activeTab==="problems" ? "2px solid #38BDF8" : "2px solid transparent",
-            color: activeTab==="problems" ? "#38BDF8" : "#a1a1aa",
+            borderBottom: activeTab==="problems" ? "2px solid var(--accent)" : "2px solid transparent",
+            color: activeTab==="problems" ? "var(--accent)" : "var(--text-body)",
             padding:"12px 16px 10px", cursor:"pointer", fontSize:13,
             fontFamily:"monospace", letterSpacing:0.5, transition:"all 0.15s",
             whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:6
           }}>
             💻 练习题
             {problems.length > 0 && (
-              <span style={{ background:"#38BDF825", color:"#38BDF8", fontSize:11, padding:"1px 5px", borderRadius:10 }}>
+              <span style={{ background:"var(--accent-25)", color:"var(--accent)", fontSize:11, padding:"1px 5px", borderRadius:10 }}>
                 {solvedProbs}/{problems.length}
               </span>
             )}
@@ -874,14 +990,14 @@ export default function App() {
                 style={{
                   background:"none", border:"none",
                   borderBottom: isActive ? `2px solid ${w.color}` : "2px solid transparent",
-                  color: isActive ? w.color : "#a1a1aa",
+                  color: isActive ? w.color : "var(--text-body)",
                   padding:"12px 16px 10px", cursor:"pointer", fontSize:13,
                   fontFamily:"monospace", letterSpacing:0.5, transition:"all 0.15s",
                   whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:6
                 }}>
                 <span>W{w.id}</span>
                 {wDone > 0 && (
-                  <span style={{ background:`${w.color}25`, color:w.color, fontSize:11, padding:"1px 5px", borderRadius:10 }}>
+                  <span style={{ background:`color-mix(in srgb, ${w.color} 15%, transparent)`, color:w.color, fontSize:11, padding:"1px 5px", borderRadius:10 }}>
                     {wDone}/7
                   </span>
                 )}
@@ -902,7 +1018,7 @@ export default function App() {
 
           <div style={{
             padding:"14px 18px", marginBottom:16,
-            background:`${week.color}0d`, border:`1px solid ${week.color}30`,
+            background:`color-mix(in srgb, ${week.color} 5%, transparent)`, border:`1px solid color-mix(in srgb, ${week.color} 19%, transparent)`,
             borderRadius:8, display:"flex", justifyContent:"space-between",
             alignItems:"flex-start", flexWrap:"wrap", gap:8
           }}>
@@ -911,73 +1027,73 @@ export default function App() {
                 Week {week.id} · {week.totalHours}
               </div>
               <div style={{ fontSize:18, fontWeight:700, fontFamily:"sans-serif", letterSpacing:-0.3 }}>{week.title}</div>
-              <div style={{ fontSize:14, color:"#71717a", marginTop:4, fontFamily:"sans-serif" }}>🎯 {week.goal}</div>
+              <div style={{ fontSize:14, color:"var(--text-secondary)", marginTop:4, fontFamily:"sans-serif" }}>🎯 {week.goal}</div>
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
-              <div style={{ fontSize:12, color:"#52525b" }}>本周完成</div>
+              <div style={{ fontSize:12, color:"var(--text-dim)" }}>本周完成</div>
               <div style={{ fontSize:20, fontWeight:700, color:week.color }}>
-                {weekDone}<span style={{ color:"#52525b", fontSize:14 }}>/7</span>
+                {weekDone}<span style={{ color:"var(--text-dim)", fontSize:14 }}>/7</span>
               </div>
             </div>
           </div>
 
           <div style={{ display:"flex", gap:12, marginBottom:14, flexWrap:"wrap" }}>
-            {[["📖 读/看","#38BDF8"],["💻 写代码","#34D399"],["📝 整理/求职","#A78BFA"]].map(([label,color]) => (
-              <div key={label} style={{ display:"flex", alignItems:"center", gap:5, fontSize:12, color:"#71717a" }}>
+            {[["📖 读/看","var(--accent)"],["💻 写代码","#34D399"],["📝 整理/求职","#A78BFA"]].map(([label,color]) => (
+              <div key={label} style={{ display:"flex", alignItems:"center", gap:5, fontSize:12, color:"var(--text-secondary)" }}>
                 <div style={{ width:6, height:6, borderRadius:"50%", background:color }} />{label}
               </div>
             ))}
-            <div style={{ fontSize:12, color:"#52525b" }}>· 点击展开，点圆圈标完成</div>
+            <div style={{ fontSize:12, color:"var(--text-dim)" }}>· 点击展开，点圆圈标完成</div>
           </div>
 
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
             {week.weekdays.map(d => {
               const isExp    = expanded === d.id;
               const isDone   = !!done[d.id];
-              const ts       = TYPE_STYLE[d.type] || { bg:"#1c1c1e", color:"#71717a" };
+              const ts       = TYPE_STYLE[d.type] || { bg:"var(--bg-inset)", color:"var(--text-secondary)" };
               const isWeekend= d.day==="Sat" || d.day==="Sun";
 
               return (
                 <div key={d.id}
                   onClick={() => setExpanded(isExp ? null : d.id)}
                   style={{
-                    background: isDone ? "#0f1a0f" : isExp ? "#18181b" : "#111113",
-                    border: `1px solid ${isDone ? "#166534" : isExp ? week.color+"50" : "#27272a"}`,
+                    background: isDone ? "var(--done-bg)" : isExp ? "var(--bg-elevated)" : "var(--bg-card)",
+                    border: `1px solid ${isDone ? "var(--done-border)" : isExp ? `color-mix(in srgb, ${week.color} 31%, transparent)` : "var(--border)"}`,
                     borderRadius:7, cursor:"pointer", transition:"all 0.18s"
                   }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10, padding:"11px 14px" }}>
                     <div onClick={e => toggleDone(d.id, e)}>
                       <CheckIcon done={isDone} color={week.color} />
                     </div>
-                    <div style={{ width:36, textAlign:"center", fontSize:12, fontWeight:700, color: isWeekend ? "#fb923c" : "#52525b", flexShrink:0 }}>
+                    <div style={{ width:36, textAlign:"center", fontSize:12, fontWeight:700, color: isWeekend ? "#fb923c" : "var(--text-dim)", flexShrink:0 }}>
                       {d.day}
                     </div>
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{
                         fontSize:15, fontWeight:600, fontFamily:"sans-serif",
                         textDecoration: isDone ? "line-through" : "none",
-                        color: isDone ? "#71717a" : "#e4e4e7",
+                        color: isDone ? "var(--text-secondary)" : "var(--text-primary)",
                         overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"
                       }}>
                         {d.label}
                       </div>
                     </div>
                     <div style={{ display:"flex", gap:6, alignItems:"center", flexShrink:0 }}>
-                      <span style={{ fontSize:12, padding:"2px 7px", borderRadius:3, background:ts.bg, color:ts.color, border:`1px solid ${ts.color}30` }}>
+                      <span style={{ fontSize:12, padding:"2px 7px", borderRadius:3, background:ts.bg, color:ts.color, border:`1px solid color-mix(in srgb, ${ts.color} 19%, transparent)` }}>
                         {d.type}
                       </span>
-                      <span style={{ fontSize:12, color:"#52525b" }}>{d.time}</span>
-                      <span style={{ color:"#52525b", fontSize:15, transform: isExp ? "rotate(180deg)" : "rotate(0deg)", transition:"transform 0.2s", display:"block", lineHeight:1 }}>⌄</span>
+                      <span style={{ fontSize:12, color:"var(--text-dim)" }}>{d.time}</span>
+                      <span style={{ color:"var(--text-dim)", fontSize:15, transform: isExp ? "rotate(180deg)" : "rotate(0deg)", transition:"transform 0.2s", display:"block", lineHeight:1 }}>⌄</span>
                     </div>
                   </div>
 
                   {isExp && (
-                    <div style={{ padding:"12px 14px 14px", borderTop:"1px solid #27272a", marginLeft:44 }}>
-                      <p style={{ margin:"0 0 10px", fontSize:15, color:"#d4d4d8", lineHeight:1.75, fontFamily:"sans-serif" }}>
+                    <div style={{ padding:"12px 14px 14px", borderTop:"1px solid var(--border)", marginLeft:44 }}>
+                      <p style={{ margin:"0 0 10px", fontSize:15, color:"var(--text-tertiary)", lineHeight:1.75, fontFamily:"sans-serif" }}>
                         {d.task}
                       </p>
                       {d.link && (
-                        <div style={{ fontSize:13, color:"#52525b", fontFamily:"monospace" }}>
+                        <div style={{ fontSize:13, color:"var(--text-dim)", fontFamily:"monospace" }}>
                           <span style={{ color:week.color }}>→ </span>{d.link}
                         </div>
                       )}
@@ -997,21 +1113,21 @@ export default function App() {
       </div>
 
       {/* ── FOOTER ── */}
-      <div style={{ borderTop:"1px solid #27272a", padding:"14px 24px 12px", background:"#0c0c0f" }}>
+      <div style={{ borderTop:"1px solid var(--border)", padding:"14px 24px 12px", background:"var(--bg-header)" }}>
         <div className="content-wrap">
-          <div style={{ fontSize:12, color:"#52525b", letterSpacing:1.5, textTransform:"uppercase", marginBottom:12 }}>学完后简历技术栈</div>
+          <div style={{ fontSize:12, color:"var(--text-dim)", letterSpacing:1.5, textTransform:"uppercase", marginBottom:12 }}>学完后简历技术栈</div>
           <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
             {[
-              ["Next.js 14+","#38BDF8"],["TypeScript","#38BDF8"],
+              ["Next.js 14+","var(--accent)"],["TypeScript","var(--accent)"],
               ["GraphQL","#A78BFA"],["Apollo Client","#A78BFA"],
-              ["TanStack Query","#38BDF8"],["Zod","#34D399"],
+              ["TanStack Query","var(--accent)"],["Zod","#34D399"],
               ["React Hook Form","#34D399"],["Tailwind CSS","#fb923c"],
               ["shadcn/ui","#F472B6"],["Zustand","#34D399"],
               ["Vite","#fb923c"],["Vitest","#34D399"],
-              ["GitHub Actions","#38BDF8"],["Vercel","#38BDF8"],
+              ["GitHub Actions","var(--accent)"],["Vercel","var(--accent)"],
               ["Vercel AI SDK","#A78BFA"],
             ].map(([t,c]) => (
-              <span key={t} style={{ fontSize:12, padding:"3px 9px", borderRadius:3, background:`${c}18`, color:c, border:`1px solid ${c}30`, fontFamily:"monospace" }}>{t}</span>
+              <span key={t} style={{ fontSize:12, padding:"3px 9px", borderRadius:3, background:`color-mix(in srgb, ${c} 9%, transparent)`, color:c, border:`1px solid color-mix(in srgb, ${c} 19%, transparent)`, fontFamily:"monospace" }}>{t}</span>
             ))}
           </div>
         </div>

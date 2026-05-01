@@ -30,6 +30,16 @@
   ],
   "problems": [
     {
+      "id": 1777608283924,
+      "date": "2026-05-01",
+      "name": "Abort controller的用法",
+      "category": "React Component",
+      "diff": "Medium",
+      "status": "Solved",
+      "notes": "AbortController — interview talking points\n\nWhy I'm using it: handles two issues with async work in useEffect — StrictMode double-invoke (duplicate fetches in dev) and component unmount mid-fetch (wasted requests + setState on unmounted component).\nHow it works: new AbortController() in effect, pass signal to fetch, cleanup calls controller.abort(). Fetch rejects with AbortError, catch returns early — no setState.\nWhy not isMounted ref: only drops the response, doesn't cancel the actual request. Also React 18 removed the unmount warning, so the pattern is outdated.\nGotcha: controller is single-use, need a fresh one per request. Inner try/catch should re-throw AbortError so outer handler sees it.\n\n\n```js\nuseEffect(() => {\n  const controller = new AbortController();\n\n  const fetchData = async () => {\n    try {\n      const res = await fetch('/api/jobs', { signal: controller.signal });\n      const data = await res.json();\n      setJobs(data);\n    } catch (err) {\n      if (err.name === 'AbortError') return;\n      console.error(err);\n    }\n  };\n\n  fetchData();\n\n  return () => controller.abort();\n}, []);\n```",
+      "url": ""
+    },
+    {
       "id": 1777436509159,
       "date": "2026-04-29",
       "name": "Job Board",
