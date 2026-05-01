@@ -372,6 +372,40 @@ function LogView({ logs, setLogs }) {
 
 // ─── PROBLEM VIEW ─────────────────────────────────────────────────────────────
 
+function renderNotes(text) {
+  const blockParts = text.split(/(```[\s\S]*?```)/g);
+  return blockParts.map((part, i) => {
+    if (part.startsWith("```") && part.endsWith("```")) {
+      const inner = part.slice(3, -3);
+      const firstLine = inner.indexOf("\n");
+      const lang = firstLine > 0 ? inner.slice(0, firstLine).trim() : "";
+      const code = lang ? inner.slice(firstLine + 1) : inner.replace(/^\n/, "");
+      return (
+        <pre key={i} style={{
+          margin: "6px 0", padding: "10px 12px",
+          background: "#09090b", border: "1px solid #27272a",
+          borderRadius: 5, overflowX: "auto", whiteSpace: "pre",
+          fontFamily: "'DM Mono','Fira Code',monospace",
+          fontSize: 11.5, color: "#a3e635", lineHeight: 1.65
+        }}>{lang && <span style={{ display:"block", fontSize:9, color:"#52525b", marginBottom:4 }}>{lang}</span>}<code>{code}</code></pre>
+      );
+    }
+    const inlineParts = part.split(/(`[^`\n]+`)/g);
+    return inlineParts.map((seg, j) => {
+      if (seg.startsWith("`") && seg.endsWith("`") && seg.length > 2) {
+        return (
+          <code key={`${i}-${j}`} style={{
+            background: "#1c1c1f", border: "1px solid #3f3f46",
+            borderRadius: 3, padding: "1px 5px",
+            fontFamily: "'DM Mono','Fira Code',monospace", fontSize: 11, color: "#fbbf24"
+          }}>{seg.slice(1, -1)}</code>
+        );
+      }
+      return seg ? <span key={`${i}-${j}`}>{seg}</span> : null;
+    });
+  });
+}
+
 function ProblemView({ problems, setProblems }) {
   const [showForm, setShowForm]   = useState(false);
   const [name, setName]           = useState("");
@@ -522,14 +556,22 @@ function ProblemView({ problems, setProblems }) {
 
           {/* Notes */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 10, color: "#52525b", marginBottom: 4 }}>解题思路 / 难点</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+              <div style={{ fontSize: 10, color: "#52525b" }}>解题思路 / 难点</div>
+              <div style={{ fontSize: 9, color: "#3f3f46", fontFamily: "monospace" }}>
+                <code style={{ background:"#1c1c1f", padding:"1px 4px", borderRadius:2, color:"#52525b" }}>`code`</code>
+                {" "}内联 · {" "}
+                <code style={{ background:"#1c1c1f", padding:"1px 4px", borderRadius:2, color:"#52525b" }}>```</code>
+                {" "}代码块
+              </div>
+            </div>
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
-              placeholder="例：用 Map 记录 seen，O(n) 时间复杂度。边界：空数组、重复值..."
-              rows={3}
+              placeholder={"例：用 Map 记录 seen，`O(n)` 复杂度。\n```js\nconst seen = new Map();\nfor (const [i, v] of nums.entries()) {\n  if (seen.has(target - v)) return [seen.get(target - v), i];\n  seen.set(v, i);\n}\n```"}
+              rows={5}
               style={{
                 width: "100%", background: "#09090b", border: "1px solid #3f3f46",
                 color: "#e4e4e7", borderRadius: 5, padding: "8px 10px",
-                fontSize: 13, fontFamily: "sans-serif", resize: "vertical",
+                fontSize: 12, fontFamily: "'DM Mono','Fira Code',monospace", resize: "vertical",
                 boxSizing: "border-box", lineHeight: 1.6, outline: "none"
               }}/>
           </div>
@@ -588,9 +630,9 @@ function ProblemView({ problems, setProblems }) {
 
                     {/* Notes */}
                     {p.notes && (
-                      <p style={{ margin: 0, fontSize: 12, color: "#71717a", fontFamily: "sans-serif", lineHeight: 1.65 }}>
-                        {p.notes}
-                      </p>
+                      <div style={{ margin: 0, fontSize: 12, color: "#71717a", fontFamily: "sans-serif", lineHeight: 1.65 }}>
+                        {renderNotes(p.notes)}
+                      </div>
                     )}
                   </div>
 
@@ -606,7 +648,7 @@ function ProblemView({ problems, setProblems }) {
       ))}
 
       <div style={{ fontSize: 10, color: "#3f3f46", textAlign: "center", marginTop: 8, fontFamily: "sans-serif" }}>
-        点 Difficulty / Status 标签可以快速切换
+        点 Difficulty / Status 标签可以快速切换 · 笔记支持 <code style={{ background:"#1c1c1f", padding:"1px 4px", borderRadius:2 }}>`内联代码`</code> 和 <code style={{ background:"#1c1c1f", padding:"1px 4px", borderRadius:2 }}>```代码块```</code>
       </div>
     </div>
   );
