@@ -738,6 +738,7 @@ export default function App() {
   const [activeWeek, setActiveWeek] = useState(0);
   const [expanded, setExpanded]     = useState(null);
   const [done, setDone]             = useState({});
+  const [taskNotes, setTaskNotes]   = useState({});
   const [showCut, setShowCut]       = useState(false);
   const [logs, setLogs]             = useState([]);
   const [problems, setProblems]     = useState([]);
@@ -749,9 +750,10 @@ export default function App() {
     fetch("/api/data")
       .then(r => r.json())
       .then(data => {
-        if (data.done)     setDone(data.done);
-        if (data.logs)     setLogs(data.logs);
-        if (data.problems) setProblems(data.problems);
+        if (data.done)       setDone(data.done);
+        if (data.taskNotes)  setTaskNotes(data.taskNotes);
+        if (data.logs)       setLogs(data.logs);
+        if (data.problems)   setProblems(data.problems);
         setLoaded(true);
       });
   }, []);
@@ -765,10 +767,10 @@ export default function App() {
       fetch("/api/data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ done, logs, problems }),
+        body: JSON.stringify({ done, taskNotes, logs, problems }),
       }).then(() => setSaveStatus("saved"));
     }, 1000);
-  }, [done, logs, problems, loaded]);
+  }, [done, taskNotes, logs, problems, loaded]);
 
   const toggleDone = (id, e) => {
     e.stopPropagation();
@@ -1079,6 +1081,9 @@ export default function App() {
                       </div>
                     </div>
                     <div style={{ display:"flex", gap:6, alignItems:"center", flexShrink:0 }}>
+                      {taskNotes[d.id] && !isExp && (
+                        <span title="有学习笔记" style={{ fontSize:11, color: week.color, opacity: 0.8 }}>✎</span>
+                      )}
                       <span style={{ fontSize:12, padding:"2px 7px", borderRadius:3, background:ts.bg, color:ts.color, border:`1px solid color-mix(in srgb, ${ts.color} 19%, transparent)` }}>
                         {d.type}
                       </span>
@@ -1102,6 +1107,37 @@ export default function App() {
                           ⚡ 周末写代码课时 — 平日理解概念，今天动手实现
                         </div>
                       )}
+
+                      {/* Task notes */}
+                      <div style={{ marginTop:14, borderTop:"1px solid var(--border)", paddingTop:12 }}>
+                        <div style={{ fontSize:11, color:"var(--text-dim)", letterSpacing:1.5, textTransform:"uppercase", marginBottom:8 }}>
+                          ✎ 学习笔记 · 面试要点
+                        </div>
+                        {taskNotes[d.id] && (
+                          <div style={{ marginBottom:10, fontSize:14, color:"var(--text-body)", lineHeight:1.8, fontFamily:"sans-serif", whiteSpace:"pre-wrap" }}>
+                            {renderNotes(taskNotes[d.id])}
+                          </div>
+                        )}
+                        <textarea
+                          value={taskNotes[d.id] || ""}
+                          onChange={e => setTaskNotes(prev => ({ ...prev, [d.id]: e.target.value }))}
+                          onClick={e => e.stopPropagation()}
+                          placeholder={"面试要点、学习笔记... 支持 `inline code` 和 ```代码块```"}
+                          rows={3}
+                          style={{
+                            width:"100%", background:"var(--bg-deep)", border:"1px solid var(--border-muted)",
+                            color:"var(--text-primary)", borderRadius:5, padding:"8px 10px",
+                            fontSize:13, fontFamily:"'DM Mono','Fira Code',monospace", resize:"vertical",
+                            boxSizing:"border-box", lineHeight:1.6, outline:"none"
+                          }}
+                        />
+                        <div style={{ fontSize:10, color:"var(--text-dim)", marginTop:4, fontFamily:"monospace" }}>
+                          <code style={{ background:"var(--bg-inset)", padding:"1px 4px", borderRadius:2 }}>`code`</code>
+                          {" 内联 · "}
+                          <code style={{ background:"var(--bg-inset)", padding:"1px 4px", borderRadius:2 }}>```</code>
+                          {" 代码块 · 自动保存"}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
