@@ -742,7 +742,7 @@ export default function App() {
   const [showCut, setShowCut]       = useState(false);
   const [logs, setLogs]             = useState([]);
   const [problems, setProblems]     = useState([]);
-  const [isDark, setIsDark]         = useState(true);
+  const [isDark, setIsDark]         = useState(false);
   const saveTimer = useRef(null);
 
   // Load state from server on mount
@@ -856,7 +856,7 @@ export default function App() {
       background: "var(--bg-deep)", minHeight: "100vh",
       display: "flex", flexDirection: "column",
       fontFamily: "'DM Mono','Fira Code',monospace",
-      color: "var(--text-primary)", fontSize: 15,
+      color: "var(--text-primary)", fontSize: 16,
       WebkitFontSmoothing: isDark ? "antialiased" : "subpixel-antialiased",
       MozOsxFontSmoothing: isDark ? "grayscale" : "auto"
     }}>
