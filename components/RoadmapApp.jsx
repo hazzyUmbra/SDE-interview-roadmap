@@ -348,38 +348,107 @@ function LogView({ logs, setLogs }) {
 
 // ─── PROBLEM VIEW ─────────────────────────────────────────────────────────────
 
+const INLINE_CODE_STYLE = {
+  background: "var(--bg-inset)", border: "1px solid var(--border-muted)",
+  borderRadius: 3, padding: "1px 5px",
+  fontFamily: "'DM Mono','Fira Code',monospace", fontSize: 14, color: "var(--code-inline)"
+};
+
+function renderInline(text) {
+  // handles **bold**, *italic*, `code`
+  return text.split(/(\*\*[^*\n]+\*\*|\*[^*\n]+\*|`[^`\n]+`)/g).map((seg, i) => {
+    if (seg.startsWith("**") && seg.endsWith("**") && seg.length > 4)
+      return <strong key={i} style={{ fontWeight: 700, color: "inherit" }}>{seg.slice(2, -2)}</strong>;
+    if (seg.startsWith("*") && seg.endsWith("*") && seg.length > 2)
+      return <em key={i}>{seg.slice(1, -1)}</em>;
+    if (seg.startsWith("`") && seg.endsWith("`") && seg.length > 2)
+      return <code key={i} style={INLINE_CODE_STYLE}>{seg.slice(1, -1)}</code>;
+    return seg || null;
+  });
+}
+
 function renderNotes(text) {
+  const elements = [];
   const blockParts = text.split(/(```[\s\S]*?```)/g);
-  return blockParts.map((part, i) => {
+
+  blockParts.forEach((part, bi) => {
     if (part.startsWith("```") && part.endsWith("```")) {
       const inner = part.slice(3, -3);
       const firstLine = inner.indexOf("\n");
       const lang = firstLine > 0 ? inner.slice(0, firstLine).trim() : "";
       const code = lang ? inner.slice(firstLine + 1) : inner.replace(/^\n/, "");
-      return (
-        <pre key={i} style={{
-          margin: "6px 0", padding: "10px 12px",
+      elements.push(
+        <pre key={`cb-${bi}`} style={{
+          margin: "8px 0", padding: "10px 12px",
           background: "var(--bg-deep)", border: "1px solid var(--border)",
           borderRadius: 5, overflowX: "auto", whiteSpace: "pre",
           fontFamily: "'DM Mono','Fira Code',monospace",
           fontSize: 15, color: "var(--code-block)", lineHeight: 1.65
-        }}>{lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}<code>{code}</code></pre>
+        }}>
+          {lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}
+          <code>{code}</code>
+        </pre>
       );
+      return;
     }
-    const inlineParts = part.split(/(`[^`\n]+`)/g);
-    return inlineParts.map((seg, j) => {
-      if (seg.startsWith("`") && seg.endsWith("`") && seg.length > 2) {
-        return (
-          <code key={`${i}-${j}`} style={{
-            background: "var(--bg-inset)", border: "1px solid var(--border-muted)",
-            borderRadius: 3, padding: "1px 5px",
-            fontFamily: "'DM Mono','Fira Code',monospace", fontSize: 14, color: "var(--code-inline)"
-          }}>{seg.slice(1, -1)}</code>
+
+    // line-by-line markdown for non-code sections
+    const lines = part.split("\n");
+    let listBuf = [];
+    let listKey = 0;
+
+    const flushList = () => {
+      if (!listBuf.length) return;
+      elements.push(
+        <ul key={`ul-${bi}-${listKey++}`} style={{ margin: "4px 0 8px", paddingLeft: 22, lineHeight: 1.85 }}>
+          {listBuf.map((item, k) => (
+            <li key={k} style={{ color: "var(--text-body)", fontFamily: "sans-serif", fontSize: 15 }}>
+              {renderInline(item)}
+            </li>
+          ))}
+        </ul>
+      );
+      listBuf = [];
+    };
+
+    lines.forEach((line, li) => {
+      const key = `${bi}-${li}`;
+      if (/^---+$/.test(line.trim())) {
+        flushList();
+        elements.push(<hr key={key} style={{ border: "none", borderTop: "1px solid var(--border)", margin: "12px 0" }} />);
+      } else if (/^## /.test(line)) {
+        flushList();
+        elements.push(<h2 key={key} style={{ margin: "14px 0 4px", fontSize: 17, fontWeight: 700, color: "var(--text-primary)", fontFamily: "sans-serif", lineHeight: 1.3 }}>{renderInline(line.slice(3))}</h2>);
+      } else if (/^### /.test(line)) {
+        flushList();
+        elements.push(<h3 key={key} style={{ margin: "10px 0 3px", fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "sans-serif", lineHeight: 1.3 }}>{renderInline(line.slice(4))}</h3>);
+      } else if (/^# /.test(line)) {
+        flushList();
+        elements.push(<h1 key={key} style={{ margin: "16px 0 6px", fontSize: 20, fontWeight: 700, color: "var(--text-primary)", fontFamily: "sans-serif", lineHeight: 1.3 }}>{renderInline(line.slice(2))}</h1>);
+      } else if (/^[-*] /.test(line)) {
+        listBuf.push(line.slice(2));
+      } else if (/^> /.test(line)) {
+        flushList();
+        elements.push(
+          <blockquote key={key} style={{ margin: "8px 0", paddingLeft: 12, borderLeft: "3px solid var(--border-muted)", color: "var(--text-secondary)", fontFamily: "sans-serif", fontSize: 15, fontStyle: "italic" }}>
+            {renderInline(line.slice(2))}
+          </blockquote>
+        );
+      } else if (line.trim() === "") {
+        flushList();
+      } else {
+        flushList();
+        elements.push(
+          <p key={key} style={{ margin: "2px 0", color: "var(--text-body)", fontFamily: "sans-serif", fontSize: 15, lineHeight: 1.8 }}>
+            {renderInline(line)}
+          </p>
         );
       }
-      return seg ? <span key={`${i}-${j}`}>{seg}</span> : null;
     });
+    flushList();
   });
+
+  return elements;
 }
 
 function ProblemView({ problems, setProblems }) {
@@ -704,7 +773,7 @@ function ProblemView({ problems, setProblems }) {
                         </span>
                       </div>
                       {p.notes && (
-                        <div style={{ margin: 0, fontSize: 17, color: "var(--text-body)", fontFamily: "sans-serif", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
+                        <div style={{ margin: 0, fontSize: 17, color: "var(--text-body)", fontFamily: "sans-serif", lineHeight: 1.75 }}>
                           {renderNotes(p.notes)}
                         </div>
                       )}
@@ -1170,7 +1239,7 @@ export default function App() {
                           </div>
                         ) : taskNotes[d.id] ? (
                           /* ── read mode ── */
-                          <div style={{ fontSize:15, color:"var(--text-body)", lineHeight:1.8, fontFamily:"sans-serif", whiteSpace:"pre-wrap" }}>
+                          <div style={{ fontSize:15, color:"var(--text-body)", lineHeight:1.8, fontFamily:"sans-serif" }}>
                             {renderNotes(taskNotes[d.id])}
                           </div>
                         ) : null}
