@@ -739,6 +739,8 @@ export default function App() {
   const [expanded, setExpanded]     = useState(null);
   const [done, setDone]             = useState({});
   const [taskNotes, setTaskNotes]   = useState({});
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [taskNoteDraft, setTaskNoteDraft] = useState("");
   const [showCut, setShowCut]       = useState(false);
   const [logs, setLogs]             = useState([]);
   const [problems, setProblems]     = useState([]);
@@ -1109,34 +1111,69 @@ export default function App() {
                       )}
 
                       {/* Task notes */}
-                      <div style={{ marginTop:14, borderTop:"1px solid var(--border)", paddingTop:12 }}>
-                        <div style={{ fontSize:11, color:"var(--text-dim)", letterSpacing:1.5, textTransform:"uppercase", marginBottom:8 }}>
-                          ✎ 学习笔记 · 面试要点
+                      <div style={{ marginTop:14, borderTop:"1px solid var(--border)", paddingTop:12 }} onClick={e => e.stopPropagation()}>
+                        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+                          <div style={{ fontSize:11, color:"var(--text-dim)", letterSpacing:1.5, textTransform:"uppercase" }}>
+                            ✎ 学习笔记 · 面试要点
+                          </div>
+                          {editingTaskId !== d.id && (
+                            <button onClick={() => { setEditingTaskId(d.id); setTaskNoteDraft(taskNotes[d.id] || ""); }}
+                              style={{ background:"none", border:"1px solid var(--border-muted)", color:"var(--text-secondary)",
+                                borderRadius:5, padding:"3px 10px", fontSize:12, cursor:"pointer", fontFamily:"monospace" }}>
+                              {taskNotes[d.id] ? "编辑" : "+ 添加笔记"}
+                            </button>
+                          )}
                         </div>
-                        {taskNotes[d.id] && (
-                          <div style={{ marginBottom:10, fontSize:14, color:"var(--text-body)", lineHeight:1.8, fontFamily:"sans-serif", whiteSpace:"pre-wrap" }}>
+
+                        {editingTaskId === d.id ? (
+                          /* ── edit mode ── */
+                          <div>
+                            <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:4 }}>
+                              <span style={{ fontSize:10, color:"var(--text-dim)", fontFamily:"monospace" }}>
+                                <code style={{ background:"var(--bg-inset)", padding:"1px 4px", borderRadius:2 }}>`code`</code>
+                                {" 内联 · "}
+                                <code style={{ background:"var(--bg-inset)", padding:"1px 4px", borderRadius:2 }}>```</code>
+                                {" 代码块"}
+                              </span>
+                            </div>
+                            <textarea
+                              autoFocus
+                              value={taskNoteDraft}
+                              onChange={e => setTaskNoteDraft(e.target.value)}
+                              placeholder={"面试要点、学习笔记...\n\n例：Query → read，Mutation → write\n\n```js\nconst { data } = useQuery(GET_USER);\n```"}
+                              rows={10}
+                              style={{
+                                width:"100%", background:"var(--bg-deep)", border:"1px solid var(--border-muted)",
+                                color:"var(--text-primary)", borderRadius:5, padding:"10px 12px",
+                                fontSize:14, fontFamily:"'DM Mono','Fira Code',monospace", resize:"vertical",
+                                boxSizing:"border-box", lineHeight:1.65, outline:"none"
+                              }}
+                            />
+                            <div style={{ display:"flex", gap:8, marginTop:8 }}>
+                              <button onClick={() => {
+                                setTaskNotes(prev => ({ ...prev, [d.id]: taskNoteDraft.trim() }));
+                                setEditingTaskId(null);
+                              }} style={{ background:"var(--accent)", border:"none", color:"#fff",
+                                borderRadius:5, padding:"7px 18px", fontSize:13, fontWeight:700,
+                                cursor:"pointer", fontFamily:"monospace" }}>保存</button>
+                              <button onClick={() => setEditingTaskId(null)}
+                                style={{ background:"none", border:"1px solid var(--border-muted)", color:"var(--text-secondary)",
+                                  borderRadius:5, padding:"7px 14px", fontSize:13, cursor:"pointer", fontFamily:"monospace" }}>取消</button>
+                              {taskNotes[d.id] && (
+                                <button onClick={() => {
+                                  setTaskNotes(prev => { const n = { ...prev }; delete n[d.id]; return n; });
+                                  setEditingTaskId(null);
+                                }} style={{ background:"none", border:"none", color:"var(--text-dim)",
+                                  fontSize:12, cursor:"pointer", fontFamily:"monospace", marginLeft:"auto" }}>删除笔记</button>
+                              )}
+                            </div>
+                          </div>
+                        ) : taskNotes[d.id] ? (
+                          /* ── read mode ── */
+                          <div style={{ fontSize:15, color:"var(--text-body)", lineHeight:1.8, fontFamily:"sans-serif", whiteSpace:"pre-wrap" }}>
                             {renderNotes(taskNotes[d.id])}
                           </div>
-                        )}
-                        <textarea
-                          value={taskNotes[d.id] || ""}
-                          onChange={e => setTaskNotes(prev => ({ ...prev, [d.id]: e.target.value }))}
-                          onClick={e => e.stopPropagation()}
-                          placeholder={"面试要点、学习笔记... 支持 `inline code` 和 ```代码块```"}
-                          rows={3}
-                          style={{
-                            width:"100%", background:"var(--bg-deep)", border:"1px solid var(--border-muted)",
-                            color:"var(--text-primary)", borderRadius:5, padding:"8px 10px",
-                            fontSize:13, fontFamily:"'DM Mono','Fira Code',monospace", resize:"vertical",
-                            boxSizing:"border-box", lineHeight:1.6, outline:"none"
-                          }}
-                        />
-                        <div style={{ fontSize:10, color:"var(--text-dim)", marginTop:4, fontFamily:"monospace" }}>
-                          <code style={{ background:"var(--bg-inset)", padding:"1px 4px", borderRadius:2 }}>`code`</code>
-                          {" 内联 · "}
-                          <code style={{ background:"var(--bg-inset)", padding:"1px 4px", borderRadius:2 }}>```</code>
-                          {" 代码块 · 自动保存"}
-                        </div>
+                        ) : null}
                       </div>
                     </div>
                   )}
