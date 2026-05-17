@@ -351,6 +351,59 @@ function LogView({ logs, setLogs }) {
 
 // ─── PROBLEM VIEW ─────────────────────────────────────────────────────────────
 
+// ─── SYNTAX HIGHLIGHTER (JS / TS / JSX / TSX) ────────────────────────────────
+
+const JS_LANGS = new Set(["js","jsx","javascript","ts","tsx","typescript"]);
+
+const HL_RE = new RegExp([
+  "(\\/\\/[^\\n]*)",                                    // line comment
+  "(\\/\\*[\\s\\S]*?\\*\\/)",                           // block comment
+  "(`(?:[^`\\\\]|\\\\.)*`)",                            // template literal
+  '("(?:[^"\\\\]|\\\\.)*")',                            // double string
+  "('(?:[^'\\\\]|\\\\.)*')",                            // single string
+  "\\b(const|let|var|function|return|if|else|for|while|do|class|new|this|typeof|instanceof|import|export|default|from|async|await|try|catch|finally|throw|of|in|switch|case|break|continue|yield|static|extends|super|void)\\b",
+  "\\b(type|interface|enum|implements|declare|namespace|abstract|readonly|keyof|infer|never|unknown|as|satisfies)\\b",
+  "\\b(true|false|null|undefined|NaN|Infinity)\\b",
+  "\\b(string|number|boolean|any|object|symbol|bigint|Promise|Array|Object|Map|Set|Error|console|window|document|fetch|JSON|Math|React|useState|useEffect|useRef|useCallback|useMemo|useContext|useReducer)\\b",
+  "\\b(\\d+\\.?\\d*(?:e[+-]?\\d+)?)\\b",              // number
+  "\\b([A-Z][A-Za-z0-9_]*)\\b",                        // PascalCase type/class
+  "\\b([a-zA-Z_$][a-zA-Z0-9_$]*)(?=\\s*\\()",         // function call
+].join("|"), "g");
+
+function tokenizeJS(code) {
+  const tokens = [];
+  let last = 0;
+  let m;
+  HL_RE.lastIndex = 0;
+  while ((m = HL_RE.exec(code)) !== null) {
+    if (m.index > last) tokens.push({ t: "plain", v: code.slice(last, m.index) });
+    const v = m[0];
+    let t = "plain";
+    if      (m[1] || m[2])  t = "comment";
+    else if (m[3] || m[4] || m[5]) t = "string";
+    else if (m[6])  t = "keyword";
+    else if (m[7])  t = "ts-kw";
+    else if (m[8])  t = "number";   // true/false/null reuse number color
+    else if (m[9])  t = "builtin";
+    else if (m[10]) t = "number";
+    else if (m[11]) t = "type";
+    else if (m[12]) t = "fn";
+    tokens.push({ t, v });
+    last = HL_RE.lastIndex;
+  }
+  if (last < code.length) tokens.push({ t: "plain", v: code.slice(last) });
+  return tokens;
+}
+
+function renderHighlighted(code) {
+  return tokenizeJS(code).map((tok, i) => {
+    const color = tok.t === "plain" ? undefined : `var(--hl-${tok.t})`;
+    return color
+      ? <span key={i} style={{ color }}>{tok.v}</span>
+      : tok.v;
+  });
+}
+
 const INLINE_CODE_STYLE = {
   background: "var(--bg-inset)", border: "1px solid var(--border-muted)",
   borderRadius: 3, padding: "1px 5px",
@@ -389,7 +442,7 @@ function renderNotes(text) {
           fontSize: 15, color: "var(--code-block)", lineHeight: 1.65
         }}>
           {lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}
-          <code>{code}</code>
+          <code>{JS_LANGS.has(lang.toLowerCase()) ? renderHighlighted(code) : code}</code>
         </pre>
       );
       return;
@@ -947,6 +1000,14 @@ export default function App() {
     "--code-inline":    "#fbbf24",
     "--done-bg":        "#0f1a0f",
     "--done-border":    "#166534",
+    "--hl-keyword":     "#c084fc",
+    "--hl-ts-kw":       "#818cf8",
+    "--hl-string":      "#4ade80",
+    "--hl-comment":     "#52525b",
+    "--hl-number":      "#fb923c",
+    "--hl-builtin":     "#38bdf8",
+    "--hl-type":        "#67e8f9",
+    "--hl-fn":          "#fbbf24",
   } : {
     "--bg-deep":        "#ffffff",
     "--bg-header":      "#f4f4f6",
@@ -972,6 +1033,14 @@ export default function App() {
     "--code-inline":    "#b45309",
     "--done-bg":        "#f0fdf4",
     "--done-border":    "#86efac",
+    "--hl-keyword":     "#7c3aed",
+    "--hl-ts-kw":       "#4338ca",
+    "--hl-string":      "#16a34a",
+    "--hl-comment":     "#94a3b8",
+    "--hl-number":      "#ea580c",
+    "--hl-builtin":     "#0284c7",
+    "--hl-type":        "#0891b2",
+    "--hl-fn":          "#d97706",
   };
 
   if (!loaded) {
