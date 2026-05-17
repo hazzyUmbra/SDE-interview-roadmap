@@ -396,6 +396,8 @@ function renderNotes(text) {
     const lines = part.split("\n");
     let listBuf = [];
     let listKey = 0;
+    let tableBuf = [];
+    let tableKey = 0;
 
     const flushList = () => {
       if (!listBuf.length) return;
@@ -411,33 +413,77 @@ function renderNotes(text) {
       listBuf = [];
     };
 
+    const flushTable = () => {
+      if (!tableBuf.length) return;
+      const rows = tableBuf.map(l => l.split("|").slice(1, -1).map(c => c.trim()));
+      const sepIdx = rows.findIndex(r => r.every(c => /^[-: ]+$/.test(c)));
+      const head = sepIdx > 0 ? rows.slice(0, sepIdx) : [];
+      const body = sepIdx >= 0 ? rows.slice(sepIdx + 1) : rows;
+      const tdBase = { border: "1px solid var(--border)", padding: "6px 12px", fontFamily: "sans-serif", fontSize: 14 };
+      elements.push(
+        <div key={`tbl-${bi}-${tableKey++}`} style={{ overflowX: "auto", margin: "10px 0" }}>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+            {head.length > 0 && (
+              <thead>
+                {head.map((row, ri) => (
+                  <tr key={ri}>
+                    {row.map((cell, ci) => (
+                      <th key={ci} style={{ ...tdBase, background: "var(--bg-elevated)", color: "var(--text-primary)", fontWeight: 700, textAlign: "left" }}>
+                        {renderInline(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+            )}
+            <tbody>
+              {body.map((row, ri) => (
+                <tr key={ri} style={{ background: ri % 2 === 1 ? "var(--bg-card)" : "transparent" }}>
+                  {row.map((cell, ci) => (
+                    <td key={ci} style={{ ...tdBase, color: "var(--text-body)" }}>{renderInline(cell)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      tableBuf = [];
+    };
+
+    const flushAll = () => { flushList(); flushTable(); };
+
     lines.forEach((line, li) => {
       const key = `${bi}-${li}`;
-      if (/^---+$/.test(line.trim())) {
+      if (/^\|/.test(line)) {
         flushList();
+        tableBuf.push(line);
+      } else if (/^---+$/.test(line.trim())) {
+        flushAll();
         elements.push(<hr key={key} style={{ border: "none", borderTop: "1px solid var(--border)", margin: "12px 0" }} />);
       } else if (/^## /.test(line)) {
-        flushList();
+        flushAll();
         elements.push(<h2 key={key} style={{ margin: "14px 0 4px", fontSize: 17, fontWeight: 700, color: "var(--text-primary)", fontFamily: "sans-serif", lineHeight: 1.3 }}>{renderInline(line.slice(3))}</h2>);
       } else if (/^### /.test(line)) {
-        flushList();
+        flushAll();
         elements.push(<h3 key={key} style={{ margin: "10px 0 3px", fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "sans-serif", lineHeight: 1.3 }}>{renderInline(line.slice(4))}</h3>);
       } else if (/^# /.test(line)) {
-        flushList();
+        flushAll();
         elements.push(<h1 key={key} style={{ margin: "16px 0 6px", fontSize: 20, fontWeight: 700, color: "var(--text-primary)", fontFamily: "sans-serif", lineHeight: 1.3 }}>{renderInline(line.slice(2))}</h1>);
       } else if (/^[-*] /.test(line)) {
+        flushTable();
         listBuf.push(line.slice(2));
       } else if (/^> /.test(line)) {
-        flushList();
+        flushAll();
         elements.push(
           <blockquote key={key} style={{ margin: "8px 0", paddingLeft: 12, borderLeft: "3px solid var(--border-muted)", color: "var(--text-secondary)", fontFamily: "sans-serif", fontSize: 15, fontStyle: "italic" }}>
             {renderInline(line.slice(2))}
           </blockquote>
         );
       } else if (line.trim() === "") {
-        flushList();
+        flushAll();
       } else {
-        flushList();
+        flushAll();
         elements.push(
           <p key={key} style={{ margin: "2px 0", color: "var(--text-body)", fontFamily: "sans-serif", fontSize: 15, lineHeight: 1.8 }}>
             {renderInline(line)}
@@ -445,7 +491,7 @@ function renderNotes(text) {
         );
       }
     });
-    flushList();
+    flushAll();
   });
 
   return elements;
@@ -1128,7 +1174,7 @@ export default function App() {
 
               return (
                 <div key={d.id}
-                  onClick={() => setExpanded(prev => { const s = new Set(prev); s.has(d.id) ? s.delete(d.id) : s.add(d.id); return s; })}
+                  onClick={() => { if (window.getSelection()?.toString()) return; setExpanded(prev => { const s = new Set(prev); s.has(d.id) ? s.delete(d.id) : s.add(d.id); return s; }); }}
                   style={{
                     background: isDone ? "var(--done-bg)" : isExp ? "var(--bg-elevated)" : "var(--bg-card)",
                     border: `1px solid ${isDone ? "var(--done-border)" : isExp ? `color-mix(in srgb, ${week.color} 31%, transparent)` : "var(--border)"}`,
