@@ -1289,14 +1289,17 @@ export default function App() {
                                 const trimmed = taskNoteDraft.trim();
                                 setTaskNotes(prev => ({ ...prev, [d.id]: trimmed }));
                                 setEditingTaskId(null);
-                                if (trimmed) setLogs(prev => [{
-                                  id: Date.now(),
-                                  date: new Date().toISOString().slice(0, 10),
-                                  content: `📝 更新笔记：${d.label}`,
-                                  tag: inferTag(d.label),
-                                  mins: 0,
-                                  isChangelog: true,
-                                }, ...prev]);
+                                if (trimmed) {
+                                  const today = new Date().toISOString().slice(0, 10);
+                                  setLogs(prev => [{
+                                    id: Date.now(),
+                                    date: today,
+                                    content: `📝 更新笔记：${d.label}`,
+                                    tag: inferTag(d.label),
+                                    mins: 0,
+                                    isChangelog: true,
+                                  }, ...prev.filter(l => !(l.isChangelog && l.content === `📝 更新笔记：${d.label}` && l.date === today))]);
+                                }
                               }} style={{ background:"var(--accent)", border:"none", color:"#fff",
                                 borderRadius:5, padding:"7px 18px", fontSize:13, fontWeight:700,
                                 cursor:"pointer", fontFamily:"monospace" }}>保存</button>
