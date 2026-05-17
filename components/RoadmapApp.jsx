@@ -805,7 +805,7 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState("idle"); // "idle" | "saving" | "saved"
   const [activeTab, setActiveTab]   = useState("roadmap");
   const [activeWeek, setActiveWeek] = useState(0);
-  const [expanded, setExpanded]     = useState(null);
+  const [expanded, setExpanded]     = useState(new Set());
   const [done, setDone]             = useState({});
   const [taskNotes, setTaskNotes]   = useState({});
   const [editingTaskId, setEditingTaskId] = useState(null);
@@ -1059,7 +1059,7 @@ export default function App() {
             const isActive = activeTab==="roadmap" && activeWeek===i;
             return (
               <button key={w.id}
-                onClick={() => { setActiveTab("roadmap"); setActiveWeek(i); setExpanded(null); }}
+                onClick={() => { setActiveTab("roadmap"); setActiveWeek(i); setExpanded(new Set()); }}
                 style={{
                   background:"none", border:"none",
                   borderBottom: isActive ? `2px solid ${w.color}` : "2px solid transparent",
@@ -1121,14 +1121,14 @@ export default function App() {
 
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
             {week.weekdays.map(d => {
-              const isExp    = expanded === d.id;
+              const isExp    = expanded.has(d.id);
               const isDone   = !!done[d.id];
               const ts       = TYPE_STYLE[d.type] || { bg:"var(--bg-inset)", color:"var(--text-secondary)" };
               const isWeekend= d.day==="Sat" || d.day==="Sun";
 
               return (
                 <div key={d.id}
-                  onClick={() => setExpanded(isExp ? null : d.id)}
+                  onClick={() => setExpanded(prev => { const s = new Set(prev); s.has(d.id) ? s.delete(d.id) : s.add(d.id); return s; })}
                   style={{
                     background: isDone ? "var(--done-bg)" : isExp ? "var(--bg-elevated)" : "var(--bg-card)",
                     border: `1px solid ${isDone ? "var(--done-border)" : isExp ? `color-mix(in srgb, ${week.color} 31%, transparent)` : "var(--border)"}`,
