@@ -38,3 +38,54 @@ body {
     font-size: 16px;
   }
 }
+
+/* ── Prism syntax-highlighting token colors ─────────────────────────────── */
+/* Default (light) values at :root so var() always resolves even before the  */
+/* component's root div inline style loads. Dark mode overrides via inline   */
+/* styles on the component root div (CSS custom properties are inherited).   */
+
+:root {
+  --hl-keyword:  #7c3aed;
+  --hl-ts-kw:    #4338ca;
+  --hl-string:   #16a34a;
+  --hl-comment:  #6b7280;
+  --hl-number:   #ea580c;
+  --hl-builtin:  #0284c7;
+  --hl-type:     #0891b2;
+  --hl-fn:       #b45309;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata { color: var(--hl-comment) !important; font-style: italic; }
+
+.token.keyword,
+.token.control,
+.token.important { color: var(--hl-keyword) !important; font-weight: 600; }
+
+.token.builtin { color: var(--hl-builtin) !important; }
+
+.token.class-name,
+.token.maybe-class-name { color: var(--hl-type) !important; }
+
+.token.function,
+.token.function-variable { color: var(--hl-fn) !important; }
+
+.token.string,
+.token.template-string,
+.token.template-punctuation.string { color: var(--hl-string) !important; }
+
+.token.number,
+.token.boolean,
+.token.constant { color: var(--hl-number) !important; }
+
+.token.regex { color: var(--hl-string) !important; }
+
+.token.attr-name { color: var(--hl-ts-kw) !important; }
+
+.token.operator,
+.token.entity,
+.token.url { color: var(--hl-builtin) !important; }
+
+.token.punctuation { opacity: 0.6; }

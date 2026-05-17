@@ -1,11 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Prism from "prismjs";
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-tsx";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -358,47 +353,67 @@ function LogView({ logs, setLogs }) {
 
 // ─── SYNTAX HIGHLIGHTER ──────────────────────────────────────────────────────
 
-const PRISM_LANG_MAP = {
-  js: "javascript", javascript: "javascript",
-  jsx: "jsx",
-  ts: "typescript", typescript: "typescript",
-  tsx: "tsx",
-};
+// ─── SYNTAX HIGHLIGHTING ─────────────────────────────────────────────────────
+// Pure inline-style tokenizer — no CSS classes, no external deps.
+// Works reliably across SSR and client hydration.
 
-const TOKEN_COLOR = {
-  comment:           "var(--hl-comment)",
-  prolog:            "var(--hl-comment)",
-  keyword:           "var(--hl-keyword)",
-  builtin:           "var(--hl-builtin)",
-  "class-name":      "var(--hl-type)",
-  "maybe-class-name":"var(--hl-type)",
-  function:          "var(--hl-fn)",
-  "function-variable":"var(--hl-fn)",
-  string:            "var(--hl-string)",
-  "template-string": "var(--hl-string)",
-  "template-punctuation": "var(--hl-string)",
-  number:            "var(--hl-number)",
-  boolean:           "var(--hl-number)",
-  regex:             "var(--hl-string)",
-  "attr-name":       "var(--hl-ts-kw)",
-};
+const HL_LANGS = new Set(["js","jsx","ts","tsx","javascript","typescript"]);
 
-function renderToken(token, i) {
-  if (typeof token === "string") return token;
-  const color = TOKEN_COLOR[token.type];
-  const children = Array.isArray(token.content)
-    ? token.content.map(renderToken)
-    : renderToken(token.content, 0);
-  return color
-    ? <span key={i} style={{ color }}>{children}</span>
-    : <span key={i}>{children}</span>;
-}
+const JS_KEYWORDS = new Set([
+  "abstract","as","async","await","break","case","catch","class","const",
+  "continue","debugger","declare","default","delete","do","else","enum",
+  "export","extends","false","finally","for","from","function","get","if",
+  "implements","import","in","instanceof","interface","let","module",
+  "namespace","new","null","of","package","private","protected","public",
+  "readonly","return","set","static","super","switch","this","throw","true",
+  "try","type","typeof","undefined","var","void","while","with","yield",
+]);
 
-function renderHighlighted(code, lang) {
-  const grammar = PRISM_LANG_MAP[lang?.toLowerCase()];
-  if (!grammar || !Prism.languages[grammar]) return <code>{code}</code>;
-  const tokens = Prism.tokenize(code, Prism.languages[grammar]);
-  return <code>{tokens.map(renderToken)}</code>;
+// Combined regex: comments → strings → numbers → identifiers (priority order)
+const TOKEN_RE = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|`(?:[^`\\]|\\.)*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\b\d+(?:\.\d+)?n?\b|[A-Za-z_$][A-Za-z0-9_$]*/g;
+
+function tokenizeCode(code, isDark) {
+  const C = isDark
+    ? { kw:"#c084fc", str:"#4ade80", cmt:"#71717a", num:"#fb923c", fn:"#fbbf24", ty:"#67e8f9" }
+    : { kw:"#7c3aed", str:"#16a34a", cmt:"#6b7280", num:"#ea580c", fn:"#b45309", ty:"#0891b2" };
+
+  const parts = [];
+  let last = 0;
+  // Reset lastIndex so the shared regex works across multiple calls
+  TOKEN_RE.lastIndex = 0;
+  let m;
+
+  while ((m = TOKEN_RE.exec(code)) !== null) {
+    // plain text before this token
+    if (m.index > last) parts.push(code.slice(last, m.index));
+
+    const tok = m[0];
+    const key = `t${m.index}`;
+
+    if (tok.startsWith("//") || tok.startsWith("/*")) {
+      parts.push(<span key={key} style={{ color: C.cmt, fontStyle: "italic" }}>{tok}</span>);
+    } else if (tok[0] === "`" || tok[0] === '"' || tok[0] === "'") {
+      parts.push(<span key={key} style={{ color: C.str }}>{tok}</span>);
+    } else if (/^\d/.test(tok)) {
+      parts.push(<span key={key} style={{ color: C.num }}>{tok}</span>);
+    } else if (JS_KEYWORDS.has(tok)) {
+      parts.push(<span key={key} style={{ color: C.kw, fontWeight: 600 }}>{tok}</span>);
+    } else if (/^[A-Z]/.test(tok)) {
+      parts.push(<span key={key} style={{ color: C.ty }}>{tok}</span>);
+    } else {
+      // function call: identifier immediately followed by (
+      const after = code[TOKEN_RE.lastIndex];
+      if (after === "(" || code.slice(TOKEN_RE.lastIndex).match(/^\s*\(/)) {
+        parts.push(<span key={key} style={{ color: C.fn }}>{tok}</span>);
+      } else {
+        parts.push(tok);
+      }
+    }
+    last = TOKEN_RE.lastIndex;
+  }
+
+  if (last < code.length) parts.push(code.slice(last));
+  return <code>{parts}</code>;
 }
 
 const INLINE_CODE_STYLE = {
@@ -420,7 +435,7 @@ function renderInline(text) {
   });
 }
 
-function renderNotes(text) {
+function renderNotes(text, isDark) {
   const elements = [];
   const blockParts = text.split(/(```[\s\S]*?```)/g);
 
@@ -439,7 +454,7 @@ function renderNotes(text) {
           fontSize: 15, color: "var(--text-body)", lineHeight: 1.65
         }}>
           {lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}
-          {PRISM_LANG_MAP[lang?.toLowerCase()] ? renderHighlighted(code, lang) : <code>{code}</code>}
+          {tokenizeCode(code, isDark)}
         </pre>
       );
       return;
@@ -550,7 +565,7 @@ function renderNotes(text) {
   return elements;
 }
 
-function ProblemView({ problems, setProblems }) {
+function ProblemView({ problems, setProblems, isDark }) {
   const [showForm, setShowForm]   = useState(false);
   const [name, setName]           = useState("");
   const [category, setCategory]   = useState("Array / Object");
@@ -873,7 +888,7 @@ function ProblemView({ problems, setProblems }) {
                       </div>
                       {p.notes && (
                         <div style={{ margin: 0, fontSize: 17, color: "var(--text-body)", fontFamily: "sans-serif", lineHeight: 1.75 }}>
-                          {renderNotes(p.notes)}
+                          {renderNotes(p.notes, isDark)}
                         </div>
                       )}
                     </div>
@@ -1217,7 +1232,7 @@ export default function App() {
       {activeTab === "log" ? (
         <LogView logs={logs} setLogs={setLogs} />
       ) : activeTab === "problems" ? (
-        <ProblemView problems={problems} setProblems={setProblems} />
+        <ProblemView problems={problems} setProblems={setProblems} isDark={isDark} />
       ) : (
         <div className="content-wrap" style={{ paddingTop: 20, paddingBottom: 20 }}>
 
@@ -1384,7 +1399,7 @@ export default function App() {
                         ) : taskNotes[d.id] ? (
                           /* ── read mode ── */
                           <div style={{ fontSize:15, color:"var(--text-body)", lineHeight:1.8, fontFamily:"sans-serif" }}>
-                            {renderNotes(taskNotes[d.id])}
+                            {renderNotes(taskNotes[d.id], isDark)}
                           </div>
                         ) : null}
                       </div>
