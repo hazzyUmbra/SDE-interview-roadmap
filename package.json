@@ -9,7 +9,11 @@
   },
   "dependencies": {
     "next": "^15.3.1",
+    "prismjs": "^1.30.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/prismjs": "^1.26.6"
   }
 }

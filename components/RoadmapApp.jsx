@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Prism from "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -351,57 +356,34 @@ function LogView({ logs, setLogs }) {
 
 // ─── PROBLEM VIEW ─────────────────────────────────────────────────────────────
 
-// ─── SYNTAX HIGHLIGHTER (JS / TS / JSX / TSX) ────────────────────────────────
+// ─── SYNTAX HIGHLIGHTER ──────────────────────────────────────────────────────
 
-const JS_LANGS = new Set(["js","jsx","javascript","ts","tsx","typescript"]);
+const PRISM_LANG_MAP = {
+  js: "javascript", javascript: "javascript",
+  jsx: "jsx",
+  ts: "typescript", typescript: "typescript",
+  tsx: "tsx",
+};
 
-const HL_RE = new RegExp([
-  "(\\/\\/[^\\n]*)",                                    // line comment
-  "(\\/\\*[\\s\\S]*?\\*\\/)",                           // block comment
-  "(`(?:[^`\\\\]|\\\\.)*`)",                            // template literal
-  '("(?:[^"\\\\]|\\\\.)*")',                            // double string
-  "('(?:[^'\\\\]|\\\\.)*')",                            // single string
-  "\\b(const|let|var|function|return|if|else|for|while|do|class|new|this|typeof|instanceof|import|export|default|from|async|await|try|catch|finally|throw|of|in|switch|case|break|continue|yield|static|extends|super|void)\\b",
-  "\\b(type|interface|enum|implements|declare|namespace|abstract|readonly|keyof|infer|never|unknown|as|satisfies)\\b",
-  "\\b(true|false|null|undefined|NaN|Infinity)\\b",
-  "\\b(string|number|boolean|any|object|symbol|bigint|Promise|Array|Object|Map|Set|Error|console|window|document|fetch|JSON|Math|React|useState|useEffect|useRef|useCallback|useMemo|useContext|useReducer)\\b",
-  "\\b(\\d+\\.?\\d*(?:e[+-]?\\d+)?)\\b",              // number
-  "\\b([A-Z][A-Za-z0-9_]*)\\b",                        // PascalCase type/class
-  "\\b([a-zA-Z_$][a-zA-Z0-9_$]*)(?=\\s*\\()",         // function call
-].join("|"), "g");
+// Injected once; maps Prism token classes → our CSS vars
+const PRISM_STYLE = `
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--hl-comment);font-style:italic}
+.token.keyword,.token.operator.arrow,.token.module{color:var(--hl-keyword)}
+.token.builtin,.token.important{color:var(--hl-builtin)}
+.token.class-name,.token.maybe-class-name{color:var(--hl-type)}
+.token.function{color:var(--hl-fn)}
+.token.string,.token.template-string,.token.template-punctuation,.token.string-property{color:var(--hl-string)}
+.token.number,.token.boolean,.token.null,.token.undefined{color:var(--hl-number)}
+.token.operator,.token.punctuation{opacity:0.75}
+.token.attr-name{color:var(--hl-ts-kw)}
+.token.property-access{color:inherit}
+`;
 
-function tokenizeJS(code) {
-  const tokens = [];
-  let last = 0;
-  let m;
-  HL_RE.lastIndex = 0;
-  while ((m = HL_RE.exec(code)) !== null) {
-    if (m.index > last) tokens.push({ t: "plain", v: code.slice(last, m.index) });
-    const v = m[0];
-    let t = "plain";
-    if      (m[1] || m[2])  t = "comment";
-    else if (m[3] || m[4] || m[5]) t = "string";
-    else if (m[6])  t = "keyword";
-    else if (m[7])  t = "ts-kw";
-    else if (m[8])  t = "number";   // true/false/null reuse number color
-    else if (m[9])  t = "builtin";
-    else if (m[10]) t = "number";
-    else if (m[11]) t = "type";
-    else if (m[12]) t = "fn";
-    tokens.push({ t, v });
-    last = HL_RE.lastIndex;
-  }
-  if (last < code.length) tokens.push({ t: "plain", v: code.slice(last) });
-  return tokens;
-}
-
-function renderHighlighted(code) {
-  return tokenizeJS(code).map((tok, i) => {
-    const color = tok.t === "plain" ? undefined : `var(--hl-${tok.t})`;
-    return color
-      ? <span key={i} style={{ color }}>{tok.v}</span>
-      : tok.v;
-  });
+function renderHighlighted(code, lang) {
+  const grammar = PRISM_LANG_MAP[lang?.toLowerCase()];
+  if (!grammar || !Prism.languages[grammar]) return code;
+  const html = Prism.highlight(code, Prism.languages[grammar], grammar);
+  return <code dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 const INLINE_CODE_STYLE = {
@@ -442,7 +424,7 @@ function renderNotes(text) {
           fontSize: 15, color: "var(--code-block)", lineHeight: 1.65
         }}>
           {lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}
-          <code>{JS_LANGS.has(lang.toLowerCase()) ? renderHighlighted(code) : code}</code>
+          {PRISM_LANG_MAP[lang?.toLowerCase()] ? renderHighlighted(code, lang) : <code>{code}</code>}
         </pre>
       );
       return;
@@ -1066,6 +1048,8 @@ export default function App() {
       WebkitFontSmoothing: isDark ? "antialiased" : "subpixel-antialiased",
       MozOsxFontSmoothing: isDark ? "grayscale" : "auto"
     }}>
+
+      <style>{PRISM_STYLE}</style>
 
       {/* ── HEADER ── */}
       <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid var(--border)", background:"var(--bg-header)" }}>
