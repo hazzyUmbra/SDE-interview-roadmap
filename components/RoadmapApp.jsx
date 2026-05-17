@@ -365,25 +365,40 @@ const PRISM_LANG_MAP = {
   tsx: "tsx",
 };
 
-// Injected once; maps Prism token classes → our CSS vars
-const PRISM_STYLE = `
-.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--hl-comment);font-style:italic}
-.token.keyword,.token.operator.arrow,.token.module{color:var(--hl-keyword)}
-.token.builtin,.token.important{color:var(--hl-builtin)}
-.token.class-name,.token.maybe-class-name{color:var(--hl-type)}
-.token.function{color:var(--hl-fn)}
-.token.string,.token.template-string,.token.template-punctuation,.token.string-property{color:var(--hl-string)}
-.token.number,.token.boolean,.token.null,.token.undefined{color:var(--hl-number)}
-.token.operator,.token.punctuation{opacity:0.75}
-.token.attr-name{color:var(--hl-ts-kw)}
-.token.property-access{color:inherit}
-`;
+const TOKEN_COLOR = {
+  comment:           "var(--hl-comment)",
+  prolog:            "var(--hl-comment)",
+  keyword:           "var(--hl-keyword)",
+  builtin:           "var(--hl-builtin)",
+  "class-name":      "var(--hl-type)",
+  "maybe-class-name":"var(--hl-type)",
+  function:          "var(--hl-fn)",
+  "function-variable":"var(--hl-fn)",
+  string:            "var(--hl-string)",
+  "template-string": "var(--hl-string)",
+  "template-punctuation": "var(--hl-string)",
+  number:            "var(--hl-number)",
+  boolean:           "var(--hl-number)",
+  regex:             "var(--hl-string)",
+  "attr-name":       "var(--hl-ts-kw)",
+};
+
+function renderToken(token, i) {
+  if (typeof token === "string") return token;
+  const color = TOKEN_COLOR[token.type];
+  const children = Array.isArray(token.content)
+    ? token.content.map(renderToken)
+    : renderToken(token.content, 0);
+  return color
+    ? <span key={i} style={{ color }}>{children}</span>
+    : <span key={i}>{children}</span>;
+}
 
 function renderHighlighted(code, lang) {
   const grammar = PRISM_LANG_MAP[lang?.toLowerCase()];
-  if (!grammar || !Prism.languages[grammar]) return code;
-  const html = Prism.highlight(code, Prism.languages[grammar], grammar);
-  return <code dangerouslySetInnerHTML={{ __html: html }} />;
+  if (!grammar || !Prism.languages[grammar]) return <code>{code}</code>;
+  const tokens = Prism.tokenize(code, Prism.languages[grammar]);
+  return <code>{tokens.map(renderToken)}</code>;
 }
 
 const INLINE_CODE_STYLE = {
@@ -421,7 +436,7 @@ function renderNotes(text) {
           background: "var(--bg-deep)", border: "1px solid var(--border)",
           borderRadius: 5, overflowX: "auto", whiteSpace: "pre",
           fontFamily: "'DM Mono','Fira Code',monospace",
-          fontSize: 15, color: "var(--code-block)", lineHeight: 1.65
+          fontSize: 15, color: "var(--text-body)", lineHeight: 1.65
         }}>
           {lang && <span style={{ display:"block", fontSize:10, color:"var(--text-dim)", marginBottom:4 }}>{lang}</span>}
           {PRISM_LANG_MAP[lang?.toLowerCase()] ? renderHighlighted(code, lang) : <code>{code}</code>}
@@ -1048,8 +1063,6 @@ export default function App() {
       WebkitFontSmoothing: isDark ? "antialiased" : "subpixel-antialiased",
       MozOsxFontSmoothing: isDark ? "grayscale" : "auto"
     }}>
-
-      <style>{PRISM_STYLE}</style>
 
       {/* ── HEADER ── */}
       <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid var(--border)", background:"var(--bg-header)" }}>
