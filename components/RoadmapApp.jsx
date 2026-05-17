@@ -296,7 +296,7 @@ function LogView({ logs, setLogs }) {
               <div style={{ fontSize: 13, color: "var(--text-secondary)", fontFamily: "monospace" }}>{d}</div>
               <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
               <div style={{ fontSize: 12, color: "var(--text-dim)" }}>
-                {grouped[d].reduce((s,l) => s + (l.mins||0), 0)}min
+                {grouped[d].reduce((s,l) => s + (l.isChangelog ? 0 : (l.mins||0)), 0)}min
               </div>
             </div>
 
@@ -323,7 +323,10 @@ function LogView({ logs, setLogs }) {
                           background: `color-mix(in srgb, ${c} 9%, transparent)`, color: c, border: `1px solid color-mix(in srgb, ${c} 19%, transparent)`,
                           fontFamily: "monospace"
                         }}>{entry.tag}</span>
-                        <span style={{ fontSize: 12, color: "var(--text-dim)" }}>⏱ {entry.mins}min</span>
+                        {entry.isChangelog
+                          ? <span style={{ fontSize: 12, color: "var(--text-dim)", fontFamily: "monospace" }}>✎ changelog</span>
+                          : <span style={{ fontSize: 12, color: "var(--text-dim)" }}>⏱ {entry.mins}min</span>
+                        }
                       </div>
                     </div>
                     <button
@@ -844,6 +847,23 @@ function ProblemView({ problems, setProblems }) {
   );
 }
 
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+
+function inferTag(label) {
+  if (/TypeScript/i.test(label))              return "TypeScript";
+  if (/GraphQL/i.test(label))                 return "GraphQL";
+  if (/Next\.js/i.test(label))                return "Next.js";
+  if (/CSS|Tailwind/i.test(label))            return "CSS / Tailwind";
+  if (/状态|Redux|Zustand|Jotai/i.test(label)) return "状态管理";
+  if (/性能|Performance|优化/i.test(label))   return "性能";
+  if (/测试|Test|Vitest/i.test(label))        return "测试";
+  if (/求职|面试|简历|LinkedIn/i.test(label)) return "求职 / 面试";
+  if (/AI|SDK|Vercel/i.test(label))           return "AI / SDK";
+  if (/工具|Webpack|Vite|Turbo/i.test(label)) return "工具链";
+  if (/RSC|React|Fiber|Concurrent|Server Component/i.test(label)) return "RSC / React 原理";
+  return "其他";
+}
+
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -1266,8 +1286,17 @@ export default function App() {
                             />
                             <div style={{ display:"flex", gap:8, marginTop:8 }}>
                               <button onClick={() => {
-                                setTaskNotes(prev => ({ ...prev, [d.id]: taskNoteDraft.trim() }));
+                                const trimmed = taskNoteDraft.trim();
+                                setTaskNotes(prev => ({ ...prev, [d.id]: trimmed }));
                                 setEditingTaskId(null);
+                                if (trimmed) setLogs(prev => [{
+                                  id: Date.now(),
+                                  date: new Date().toISOString().slice(0, 10),
+                                  content: `📝 更新笔记：${d.label}`,
+                                  tag: inferTag(d.label),
+                                  mins: 0,
+                                  isChangelog: true,
+                                }, ...prev]);
                               }} style={{ background:"var(--accent)", border:"none", color:"#fff",
                                 borderRadius:5, padding:"7px 18px", fontSize:13, fontWeight:700,
                                 cursor:"pointer", fontFamily:"monospace" }}>保存</button>
